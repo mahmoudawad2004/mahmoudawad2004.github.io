@@ -1,0 +1,845 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+#ms{font-family:'Share Tech Mono',monospace;border-radius:4px;padding:0;width:100%;}
+#ms.msonline{background:#c0c8c0;}
+#ms.dark{background:#12122a;border:1px solid #4455cc;}
+#ms.classic{background:#c0c0c0;border:3px solid;border-color:#fff #808080 #808080 #fff;}
+#ms.msonline{--page:#c0c8c0;--hdr:#1e2a1e;--hhi:#3a4e3a;--hlo:#0a120a;--lm:#ff2020;--lt:#00cc40;--fbg:#2a3820;--cup:#92b472;--chi:#b8d890;--clo:#4a6838;--crv:#c8c0a8;--crvb:#a8a090;--cex:#e83820;--cmb:#c84030;--met:#0e160a;--metb:#2a3a1e;--bbg:#3a4e2a;--bhi:#6a8a4a;--blo:#1a2a0a;--btx:#90cc60;--tx:#c0d8a0;--tx2:#688050;--acc:#6aaa3a;--bw:#5a7a42;--bwh:#8ab862;--bwl:#3a5222;--ibg:#0a1008;--drw:#1e2a18;--n1:#0000ee;--n2:#007b00;--n3:#cc0000;--n4:#00007b;--n5:#880000;--n6:#008888;--n7:#000;--n8:#888;}
+#ms.dark{--page:#12122a;--hdr:#1e2060;--hhi:#4455cc;--hlo:#080818;--lm:#ff2020;--lt:#00cc40;--fbg:#1e2060;--cup:#252555;--chi:#5566dd;--clo:#0a0a1a;--crv:#0a0a1a;--crvb:#1a1a3a;--cex:#ff5566;--cmb:#3a0000;--met:#0a0a1a;--metb:#252555;--bbg:#1e2060;--bhi:#6688ff;--blo:#080818;--btx:#c0d0ff;--tx:#d0d8ff;--tx2:#7788cc;--acc:#6688ff;--bw:#252555;--bwh:#5566dd;--bwl:#0a0a1a;--ibg:#080818;--drw:#0a0a1a;--n1:#5599ff;--n2:#44cc88;--n3:#ff6644;--n4:#aa44ff;--n5:#ff4444;--n6:#44dddd;--n7:#ffaa22;--n8:#aaaaaa;}
+#ms.classic{--page:#c0c0c0;--hdr:#c0c0c0;--hhi:#fff;--hlo:#808080;--lm:#ff0000;--lt:#00cc00;--fbg:#c0c0c0;--cup:#c0c0c0;--chi:#fff;--clo:#808080;--crv:#c0c0c0;--crvb:#808080;--cex:#ff0000;--cmb:#ff0000;--met:#d4d0c8;--metb:#808080;--bbg:#c0c0c0;--bhi:#fff;--blo:#808080;--btx:#000;--tx:#000;--tx2:#444;--acc:#0000cc;--bw:#c0c0c0;--bwh:#fff;--bwl:#808080;--ibg:#fff;--drw:#d4d0c8;--n1:#0000ff;--n2:#008000;--n3:#ff0000;--n4:#000080;--n5:#800000;--n6:#008080;--n7:#000;--n8:#808080;}
+.out{background:var(--page);padding:10px;border-radius:4px;}
+.pnl{background:var(--hdr,var(--hhi,#3a4e3a));border-top:2px solid var(--hhi);border-left:2px solid var(--hhi);border-bottom:3px solid var(--hlo);border-right:3px solid var(--hlo);border-radius:3px;padding:8px 10px;margin-bottom:8px;}
+#ms.classic .pnl{background:#c0c0c0;border:none;border-top:3px solid #fff;border-left:3px solid #fff;border-bottom:3px solid #808080;border-right:3px solid #808080;}
+.row{display:flex;gap:5px;margin-bottom:6px;align-items:center;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--bbg);color:var(--btx);border-top:1px solid var(--bhi);border-left:1px solid var(--bhi);border-bottom:2px solid var(--blo);border-right:2px solid var(--blo);border-radius:3px;padding:4px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.5px;white-space:nowrap;user-select:none;transition:filter 0.1s;}
+.btn:hover:not(:disabled){filter:brightness(1.25);}
+.btn:disabled{opacity:.28;cursor:default;}
+.btn.sel{background:var(--acc);color:#fff;}
+#ms.classic .btn{background:#c0c0c0;color:#000;border:none;border-top:2px solid #fff;border-left:2px solid #fff;border-bottom:2px solid #808080;border-right:2px solid #808080;border-radius:0;font-family:Arial,sans-serif;}
+#ms.classic .btn.sel,#ms.classic .btn:hover:not(:disabled){background:#b0b0b0;border-top:2px solid #808080;border-left:2px solid #808080;border-bottom:2px solid #fff;border-right:2px solid #fff;}
+.sel2{background:var(--bbg);color:var(--btx);border-top:1px solid var(--bhi);border-left:1px solid var(--bhi);border-bottom:2px solid var(--blo);border-right:2px solid var(--blo);border-radius:3px;padding:4px 6px;font-family:'Share Tech Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;height:28px;}
+#ms.classic .sel2{background:#c0c0c0;color:#000;border:none;border-top:2px solid #808080;border-left:2px solid #808080;border-bottom:2px solid #fff;border-right:2px solid #fff;border-radius:0;font-family:Arial,sans-serif;}
+.inp{background:var(--ibg);color:var(--tx);border:1px solid var(--metb);border-radius:3px;padding:3px 6px;font-family:'Share Tech Mono',monospace;font-size:10px;font-weight:700;height:28px;}
+#ms.classic .inp{background:#fff;color:#000;border:2px inset #808080;border-radius:0;font-family:Arial,sans-serif;}
+#mbar{display:flex;gap:0;margin-bottom:6px;border-radius:3px;overflow:hidden;border:1px solid var(--blo);}
+.mtab{flex:1;text-align:center;padding:5px 4px;font-family:'Share Tech Mono',monospace;font-size:10px;font-weight:700;cursor:pointer;border:none;background:var(--bbg);color:var(--tx2);user-select:none;}
+.mtab.m0{background:var(--acc);color:#fff;}.mtab.m1{background:#6a4400;color:#ffcc66;}.mtab.m2{background:#003a6a;color:#88bbff;}
+#ms.msonline .mtab{background:#2a3820;color:#688050;}#ms.msonline .mtab.m0{background:#5a8030;color:#d0f090;}#ms.msonline .mtab.m1{background:#6a4400;color:#ffcc66;}#ms.msonline .mtab.m2{background:#003060;color:#88bbff;}
+#ms.classic .mtab{background:#c0c0c0;color:#444;border-right:1px solid #808080;font-family:Arial,sans-serif;}#ms.classic .mtab.m0,#ms.classic .mtab.m1,#ms.classic .mtab.m2{background:#b0b0b0;color:#000;}
+#lcd-row{display:flex;align-items:center;justify-content:space-between;background:var(--hdr,var(--met));padding:6px 8px;margin-bottom:6px;border-top:2px solid var(--hlo);border-left:2px solid var(--hlo);border-bottom:2px solid var(--hhi);border-right:2px solid var(--hhi);border-radius:2px;}
+.lcd{background:#000;padding:2px 6px;border-radius:2px;border:2px solid #000;font-family:'Share Tech Mono',monospace;font-size:22px;font-weight:700;letter-spacing:2px;min-width:66px;text-align:right;line-height:1.2;}
+#lm{color:var(--lm);}#lt{color:var(--lt);}
+#face{background:var(--fbg);border-top:2px solid var(--bhi);border-left:2px solid var(--bhi);border-bottom:3px solid var(--blo);border-right:3px solid var(--blo);width:38px;height:38px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:3px;user-select:none;}
+#stats{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:6px;}
+.met{background:var(--met);border:1px solid var(--metb);border-radius:3px;padding:5px 6px;display:flex;flex-direction:column;gap:1px;min-width:0;}
+#ms.classic .met{background:#d4d0c8;border:none;border-top:1px solid #808080;border-left:1px solid #808080;border-bottom:1px solid #fff;border-right:1px solid #fff;border-radius:0;}
+.slb{font-size:7px;color:var(--tx2);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;}
+.sv{font-size:13px;font-weight:700;white-space:nowrap;}
+.ss{font-size:8px;color:var(--tx2);white-space:nowrap;}
+#s3bv .sv{color:var(--acc);}#szini .sv{color:#44ccff;}#sclk .sv{color:var(--tx);}#seff .sv{color:var(--acc);}
+#ms.classic .sv{color:#000!important;font-family:Arial,sans-serif;}#ms.classic .slb,#ms.classic .ss{color:#444;font-family:Arial,sans-serif;}
+#bwrap{width:100%;overflow-x:auto;padding:6px;background:var(--bw);border-top:3px solid var(--bwl);border-left:3px solid var(--bwl);border-bottom:3px solid var(--bwh);border-right:3px solid var(--bwh);border-radius:3px;margin-bottom:8px;display:flex;justify-content:center;}
+#ms.classic #bwrap{background:#c0c0c0;border-top:3px solid #808080;border-left:3px solid #808080;border-bottom:3px solid #fff;border-right:3px solid #fff;border-radius:0;}
+#board{display:inline-grid;flex-shrink:0;gap:0;line-height:0;}
+.cell{background:var(--cup);border-top:2px solid var(--chi);border-left:2px solid var(--chi);border-bottom:2px solid var(--clo);border-right:2px solid var(--clo);display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;touch-action:manipulation;flex-shrink:0;position:relative;}
+.cell:hover:not(.rv):not(.xp){filter:brightness(1.1);}
+.cell.rv{background:var(--crv);border:1px solid var(--crvb);cursor:default;}
+.cell.fg{color:#e02020;}.cell.mr{background:var(--cmb)!important;}.cell.xp{background:var(--cex)!important;}
+.cell.n1{color:var(--n1)}.cell.n2{color:var(--n2)}.cell.n3{color:var(--n3)}.cell.n4{color:var(--n4)}.cell.n5{color:var(--n5)}.cell.n6{color:var(--n6)}.cell.n7{color:var(--n7)}.cell.n8{color:var(--n8)}
+#ms.classic .cell{background:#c0c0c0;border-top:3px solid #fff;border-left:3px solid #fff;border-bottom:3px solid #808080;border-right:3px solid #808080;}
+#ms.classic .cell:hover:not(.rv):not(.xp){background:#d0d0d0;}#ms.classic .cell.rv{background:#c0c0c0;border:1px solid #808080;}#ms.classic .cell.mr,#ms.classic .cell.xp{background:#ff0000!important;}#ms.classic .cell.fg{color:#ff0000;}
+.cell.hm{outline:2px solid #ff4444;outline-offset:-2px;z-index:1;}.cell.hs{outline:2px solid #00ee77;outline-offset:-2px;z-index:1;}.cell.hs2{outline:1px solid #00aa55;outline-offset:-2px;}.cell.hg{outline:2px solid #ffaa00;outline-offset:-2px;z-index:1;}.cell.hf{outline:2px solid #ff7722;outline-offset:-2px;z-index:1;}.cell.hc{outline:2px solid #22ffcc;outline-offset:-2px;z-index:1;}.cell.ho{outline:2px solid #ffcc00;outline-offset:-2px;z-index:2;}.cell.chl{outline:2px solid #ffff00;outline-offset:-2px;}.cell.rpc{outline:3px solid rgba(255,255,255,.8);outline-offset:-2px;}
+.hlb{position:absolute;top:1px;right:1px;font-size:7px;font-weight:900;pointer-events:none;z-index:3;}
+.plb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:8px;font-weight:700;pointer-events:none;z-index:2;text-shadow:0 0 3px rgba(0,0,0,.8);}
+#msg{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;min-height:16px;margin-bottom:5px;color:var(--tx);}
+#msg.win{color:#00cc40!important;font-weight:700;}#msg.lose{color:#ff3030!important;font-weight:700;}
+#msg.is{color:#40ff80!important;}#msg.im{color:#ff5555!important;}#msg.ig{color:#ffaa00!important;}#msg.ii{color:#ffee40!important;}#msg.ie{color:#ffcc00!important;}#msg.ir{color:#cc88ff!important;}#msg.gen{color:#44ccff!important;}
+#ms.classic #msg{font-family:Arial,sans-serif;color:#000;}
+.drw{display:none;background:var(--drw);border:1px solid var(--metb);border-radius:3px;padding:10px;margin-bottom:7px;}
+.drw.on{display:block;}
+#ms.classic .drw{background:#d4d0c8;border:none;border-top:2px solid #808080;border-left:2px solid #808080;border-bottom:2px solid #fff;border-right:2px solid #fff;border-radius:0;}
+.dtitle{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;margin-bottom:8px;font-weight:700;}
+.esite{background:var(--met);border:1px solid var(--metb);border-radius:3px;padding:7px;margin-bottom:7px;}
+.elb{font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;color:var(--tx2);}
+.ebtns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
+.eurl{font-size:9px;color:var(--tx2);word-break:break-all;background:var(--hdr,#000);padding:4px 6px;border-radius:2px;border:1px solid var(--metb);max-height:36px;overflow-y:auto;cursor:text;user-select:all;line-height:1.4;}
+.eb{display:inline-flex;align-items:center;padding:3px 8px;border-radius:3px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;cursor:pointer;border:1px solid;white-space:nowrap;text-decoration:none;}
+.eb:hover{filter:brightness(1.3);}
+.ej{color:#44ddff;border-color:#44ddff;background:transparent;}.ep{color:#cc55ff;border-color:#cc55ff;background:transparent;}.el{color:#ff8844;border-color:#ff8844;background:transparent;}.ec{color:#44cc77;border-color:#44cc77;background:transparent;}.ec.ok{background:#44cc77;color:#000;}.embf{color:#ffcc44;border-color:#ffcc44;background:transparent;}
+.iin{width:100%;background:var(--ibg);color:var(--tx);border:1px solid var(--metb);border-radius:3px;padding:6px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;margin-bottom:7px;}
+#ms.classic .iin{background:#fff;color:#000;border:2px inset #808080;border-radius:0;font-family:Arial,sans-serif;}
+.ist{font-size:10px;min-height:14px;margin-bottom:6px;}.ist.ok{color:#44cc77;}.ist.err{color:#ff4444;}
+.inote{font-size:9px;color:var(--tx2);line-height:1.5;margin-top:5px;}.inote b{color:var(--tx);}
+#rpp{display:none;flex-direction:column;gap:6px;background:var(--drw);border:1px solid var(--metb);border-radius:3px;padding:10px;margin-bottom:7px;}
+#rpp.on{display:flex;}
+#ms.classic #rpp{background:#c0c0c0;border-radius:0;border-top:3px solid #808080;border-left:3px solid #808080;border-bottom:3px solid #fff;border-right:3px solid #fff;}
+.rr{display:flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap;}
+#rpsl{flex:1;min-width:100px;accent-color:var(--acc);}
+#rplb{font-size:10px;color:var(--tx2);min-width:56px;text-align:right;}
+#hw{font-size:9px;color:var(--tx2);display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:2px 0;}
+
+/* Board generator panel */
+.gen-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:8px;}
+.gen-card{background:var(--met);border:1px solid var(--metb);border-radius:3px;padding:8px;}
+#ms.classic .gen-card{background:#d4d0c8;border:none;border-top:1px solid #808080;border-left:1px solid #808080;border-bottom:1px solid #fff;border-right:1px solid #fff;border-radius:0;}
+.gen-title{font-size:9px;color:var(--tx2);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-weight:700;}
+.gen-row{display:flex;gap:5px;align-items:center;margin-bottom:5px;font-size:10px;color:var(--tx);}
+.gen-row label{min-width:56px;font-size:9px;color:var(--tx2);}
+.gen-row .inp{flex:1;min-width:0;}
+.gen-progress{height:4px;background:var(--metb);border-radius:2px;margin-top:4px;overflow:hidden;}
+.gen-progress-bar{height:100%;background:var(--acc);border-radius:2px;width:0%;transition:width 0.1s;}
+#ms.msonline .gen-progress-bar{background:#5a8030;}
+.gen-status{font-size:9px;color:var(--acc);margin-top:4px;min-height:12px;}
+#ms.msonline .gen-status{color:#90c870;}
+</style>
+
+<div id="ms" class="msonline">
+<div class="out">
+<div class="pnl">
+  <div class="row">
+    <button class="btn sel" data-d="beg">Beg</button>
+    <button class="btn" data-d="int">Int</button>
+    <button class="btn" data-d="exp">Exp</button>
+    <select class="sel2" id="pxsel"><option value="20">20px</option><option value="22">22px</option><option value="24">24px</option><option value="26">26px</option><option value="28" selected>28px</option><option value="30">30px</option><option value="32">32px</option><option value="34">34px</option></select>
+    <button class="btn" data-th="msonline" style="color:#90c870;">Online</button>
+    <button class="btn" data-th="dark">Dark</button>
+    <button class="btn" data-th="classic">Classic</button>
+    <button class="btn" id="bnew" style="margin-left:auto;color:#ff8888;">NEW</button>
+  </div>
+  <div id="mbar">
+    <button class="mtab m0" data-m="0">Regular (Flag)</button>
+    <button class="mtab" data-m="1">Efficiency</button>
+    <button class="mtab" data-m="2">NF (No Flags)</button>
+  </div>
+  <div class="row">
+    <button class="btn" id="bhint" disabled>Hint</button>
+    <button class="btn" id="bsolve" disabled>Auto-Solve</button>
+    <button class="btn" id="bprob" disabled style="color:#ff88cc;">Probs</button>
+    <button class="btn" id="bundo" disabled style="color:#ffcc44;">↩ Undo</button>
+    <button class="btn" id="bexp" disabled style="color:#cc88ff;">Export ↗</button>
+    <button class="btn" id="bimp" style="color:#44ccff;">Import</button>
+    <button class="btn" id="bgen" style="color:#ffaa44;">⚙ Generate</button>
+  </div>
+  <div id="lcd-row">
+    <div class="lcd" id="lm">010</div>
+    <div id="face">🙂</div>
+    <div class="lcd" id="lt">000</div>
+  </div>
+  <div id="stats">
+    <div class="met" id="s3bv"><span class="slb">3BV</span><span class="sv">—</span><span class="ss">min NF clicks</span></div>
+    <div class="met" id="szini"><span class="slb">ZiNi</span><span class="sv">—</span><span class="ss">opt flag+chord</span></div>
+    <div class="met" id="sclk"><span class="slb">Clicks</span><span class="sv">0</span><span class="ss" id="sclksub">L:0 R:0</span></div>
+    <div class="met" id="seff"><span class="slb">Eff%</span><span class="sv">—</span><span class="ss" id="seffsub">solved/clicks</span></div>
+  </div>
+  <div id="msg"></div>
+</div>
+
+<div id="bwrap"><div id="board"></div></div>
+
+<!-- EXPORT DRAWER -->
+<div id="edrw" class="drw">
+  <div class="dtitle" style="color:#cc88ff;">Export Board</div>
+  <div class="esite">
+    <div class="elb">JSMinesweeper (Online Analyser)</div>
+    <div class="ebtns"><a class="eb ej" id="xjsm" href="#" target="_blank">Open ↗</a><button class="eb ec" id="cjsm">Copy URL</button></div>
+    <div class="eurl" id="ujsm">—</div>
+  </div>
+  <div class="esite">
+    <div class="elb">Ptta ZiNi Calculator</div>
+    <div class="ebtns"><a class="eb ep" id="xptta" href="#" target="_blank">Open ↗</a><button class="eb ec" id="cptta">Copy URL</button></div>
+    <div class="eurl" id="uptta">—</div>
+  </div>
+  <div class="esite">
+    <div class="elb">LlamaSweeper ZiNi</div>
+    <div class="ebtns"><a class="eb el" id="xllama" href="#" target="_blank">Open ↗</a><button class="eb ec" id="cllama">Copy URL</button></div>
+    <div class="eurl" id="ullama">—</div>
+  </div>
+  <div class="esite">
+    <div class="elb">MBF — Minesweeper Board File</div>
+    <div class="ebtns">
+      <button class="eb embf" id="dmbf">⬇ Download .mbf</button>
+      <button class="eb ec" id="cmbfhex">Copy Hex</button>
+    </div>
+    <div class="eurl" id="umbf" style="font-family:monospace;word-break:break-all;">—</div>
+    <div class="inote" style="margin-top:5px;">Binary format: cols, rows, mineCount(2 bytes), then x,y pairs per mine. Compatible with MinesweeperX, Arbiter, JSMinesweeper (drag & drop).</div>
+  </div>
+</div>
+
+<!-- IMPORT DRAWER -->
+<div id="idrw" class="drw">
+  <div class="dtitle" style="color:#44ccff;">Import Board</div>
+  <input class="iin" type="text" id="iurl" placeholder="Paste Ptta / LlamaSweeper / JSMinesweeper URL…">
+  <div id="ist" class="ist"></div>
+  <div class="row"><button class="btn" id="bdoim" style="color:#44cc77;">Load Board</button><button class="btn" id="bclim">Cancel</button></div>
+  <div class="inote">URL with <b>m=</b> from Ptta/LlamaSweeper/JSMinesweeper, or: <b>9x9x10 mstring</b></div>
+</div>
+
+<!-- BOARD GENERATOR DRAWER -->
+<div id="gdrw" class="drw">
+  <div class="dtitle" style="color:#ffaa44;">⚙ Board Generator</div>
+  <div class="gen-grid">
+    <!-- 3BV filter -->
+    <div class="gen-card">
+      <div class="gen-title">3BV Filter</div>
+      <div class="gen-row"><label>Min 3BV</label><input class="inp" type="number" id="g3bv-min" value="0" min="0" max="999" style="width:60px;"></div>
+      <div class="gen-row"><label>Max 3BV</label><input class="inp" type="number" id="g3bv-max" value="999" min="0" max="999" style="width:60px;"><span style="font-size:9px;color:var(--tx2);margin-left:4px;">0=any</span></div>
+    </div>
+    <!-- Efficiency filter -->
+    <div class="gen-card">
+      <div class="gen-title">Efficiency Filter (3BV/ZiNi)</div>
+      <div class="gen-row"><label>Min Eff%</label><input class="inp" type="number" id="geff-min" value="0" min="0" max="200" step="5" style="width:60px;"><span style="font-size:9px;color:var(--tx2);margin-left:4px;">%</span></div>
+      <div class="gen-row" style="font-size:9px;color:var(--tx2);">Eff = 3BV/ZiNi×100<br>100% = no flag savings<br>&lt;100% = flags save clicks</div>
+    </div>
+  </div>
+  <div class="row" style="margin-bottom:6px;">
+    <span style="font-size:9px;color:var(--tx2);">Board:</span>
+    <button class="btn sel" id="gb-beg" data-gb="beg">Beginner</button>
+    <button class="btn" id="gb-int" data-gb="int">Intermediate</button>
+    <button class="btn" id="gb-exp" data-gb="exp">Expert</button>
+    <span style="font-size:9px;color:var(--tx2);margin-left:6px;">Max tries:</span>
+    <input class="inp" type="number" id="gmaxtries" value="500" min="10" max="5000" style="width:60px;">
+  </div>
+  <div class="row">
+    <button class="btn" id="bgengo" style="color:#ffcc00;border-color:#ffcc00;">▶ Generate Board</button>
+    <button class="btn" id="bgenstop" disabled style="color:#ff8888;">■ Stop</button>
+    <span id="gstatus" class="gen-status"></span>
+  </div>
+  <div class="gen-progress"><div class="gen-progress-bar" id="gpbar"></div></div>
+</div>
+
+<!-- REPLAY -->
+<div id="rpp">
+  <div class="rr"><span class="dtitle" style="color:#cc88ff;margin:0;">Replay</span></div>
+  <div class="rr">
+    <button class="btn" id="rpf">|◀</button><button class="btn" id="rpp2">◀</button>
+    <button class="btn" id="rppl">▶ Play</button>
+    <button class="btn" id="rpn">▶|</button><button class="btn" id="rpl">▶▶|</button>
+  </div>
+  <div class="rr">
+    <span style="font-size:10px;color:var(--tx2);">Step</span>
+    <input type="range" id="rpsl" min="0" value="0" step="1">
+    <span id="rplb">0/0</span>
+  </div>
+  <div class="rr">
+    <button class="btn" id="rpcont">Continue Playing</button>
+    <button class="btn" id="rpsolve">Auto-Solve From Here</button>
+  </div>
+</div>
+<div id="hw"><span>Left=reveal</span><span>Right=flag</span><span>Click #=chord</span><span>Long press=flag</span></div>
+</div>
+</div>
+
+<script>
+'use strict';
+const DIFFS={beg:{rows:9,cols:9,mines:10},int:{rows:16,cols:16,mines:40},exp:{rows:16,cols:30,mines:99}};
+const B36='0123456789abcdefghijklmnopqrstuvwxyz';
+const b36v=c=>c>='0'&&c<='9'?+c:c.charCodeAt(0)-97+10;
+
+let cfg=DIFFS.beg,px=28,theme='msonline',mode=0;
+let board=[],rev=[],flagged=[],mines=new Set();
+let over=false,won=false,started=false;
+let timerInt=null,secs=0,lc=0,rc=0,totalClicks=0;
+let hs={cells:[],types:{}},solving=false,lpT=null;
+let hist=[],snaps=[];
+let rpMode=false,rpStep=0,rpPlaying=false,rpTimer=null;
+let probMode=false,probData={};
+let bv3val=0,zinival=0;
+let cmpOf=null,nCmps=0;
+let expOpen=false;
+let genRunning=false,genDiff=DIFFS.beg;
+
+const G=id=>document.getElementById(id);
+const N=()=>cfg.rows*cfg.cols;
+
+function nb(i){
+  const r=Math.floor(i/cfg.cols),c=i%cfg.cols,o=[];
+  for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+    if(!dr&&!dc)continue;
+    const nr=r+dr,nc=c+dc;
+    if(nr>=0&&nr<cfg.rows&&nc>=0&&nc<cfg.cols)o.push(nr*cfg.cols+nc);
+  }
+  return o;
+}
+
+// ── METRICS (full board knowledge for calculations only) ──
+function calc3BV(mSet,boardArr,cols,rows){
+  const tot=cols*rows;const vis=new Array(tot).fill(false);let c=0;
+  for(let i=0;i<tot;i++){if(mSet.has(i)||vis[i])continue;if(boardArr[i]===0){c++;const q=[i];vis[i]=true;while(q.length){const x=q.shift();const r2=Math.floor(x/cols),col=x%cols;for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;const nr=r2+dr,nc=col+dc;if(nr>=0&&nr<rows&&nc>=0&&nc<cols){const n=nr*cols+nc;if(!mSet.has(n)&&!vis[n]){vis[n]=true;if(boardArr[n]===0)q.push(n);}}}}} }
+  for(let i=0;i<tot;i++)if(!mSet.has(i)&&!vis[i]&&boardArr[i]>0)c++;
+  return c;
+}
+
+function calcZini(mSet,boardArr,cols,rows){
+  const tot=cols*rows;
+  const rS=new Array(tot).fill(false),fS=new Array(tot).fill(false);
+  let clicks=0,rem=tot-mSet.size;
+  const nbArr=i=>{const r=Math.floor(i/cols),c=i%cols,o=[];for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;const nr=r+dr,nc=c+dc;if(nr>=0&&nr<rows&&nc>=0&&nc<cols)o.push(nr*cols+nc);}return o;};
+  function fl(i){const s=[i];while(s.length){const c=s.pop();if(rS[c]||mSet.has(c))continue;rS[c]=true;rem--;if(boardArr[c]===0)nbArr(c).forEach(n=>{if(!mSet.has(n)&&!rS[n])s.push(n);});}}
+  for(let it=0;rem>0&&it<tot*4;it++){
+    let bs=-Infinity,ba=null;
+    for(let i=0;i<tot;i++){
+      if(!rS[i]||boardArr[i]<=0)continue;
+      const ns=nbArr(i),mN=ns.filter(n=>mSet.has(n)),nf=mN.filter(n=>!fS[n]).length;
+      const sf=ns.filter(n=>!mSet.has(n)&&!rS[n]);if(!sf.length)continue;
+      const v=new Set();sf.forEach(u=>{const s=[u];while(s.length){const c=s.pop();if(v.has(c)||rS[c]||mSet.has(c))continue;v.add(c);if(boardArr[c]===0)nbArr(c).forEach(n=>{if(!v.has(n)&&!rS[n]&&!mSet.has(n))s.push(n);});}});
+      if(!v.size)continue;const cost=nf+1,sc=v.size/cost;if(sc>bs){bs=sc;ba={t:'ch',i,mN,sf};}
+    }
+    for(let i=0;i<tot;i++){
+      if(rS[i]||fS[i]||mSet.has(i))continue;
+      const v=new Set();const s=[i];
+      while(s.length){const c=s.pop();if(v.has(c)||rS[c]||mSet.has(c))continue;v.add(c);if(boardArr[c]===0)nbArr(c).forEach(n=>{if(!v.has(n)&&!rS[n]&&!mSet.has(n))s.push(n);});}
+      if(v.size>bs){bs=v.size;ba={t:'rv',i};}
+    }
+    if(!ba)break;
+    if(ba.t==='rv'){clicks++;fl(ba.i);}
+    else{ba.mN.filter(n=>!fS[n]).forEach(n=>{fS[n]=true;clicks++;});clicks++;ba.sf.forEach(n=>{if(!rS[n])fl(n);});}
+  }
+  return clicks;
+}
+
+function buildBoard(mSet,cols,rows){
+  const tot=cols*rows,b=new Array(tot).fill(0);
+  const nbFn=i=>{const r=Math.floor(i/cols),c=i%cols,o=[];for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;const nr=r+dr,nc=c+dc;if(nr>=0&&nr<rows&&nc>=0&&nc<cols)o.push(nr*cols+nc);}return o;};
+  mSet.forEach(i=>b[i]=-1);
+  for(let i=0;i<tot;i++){if(b[i]!==-1)b[i]=nbFn(i).filter(n=>mSet.has(n)).length;}
+  return b;
+}
+
+function buildCmpMap(mSet,boardArr,cols,rows){
+  const tot=cols*rows;const cmp=new Array(tot).fill(-1);let k=0;
+  const nbFn=i=>{const r=Math.floor(i/cols),c=i%cols,o=[];for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;const nr=r+dr,nc=c+dc;if(nr>=0&&nr<rows&&nc>=0&&nc<cols)o.push(nr*cols+nc);}return o;};
+  for(let i=0;i<tot;i++){if(mSet.has(i)||cmp[i]>=0||boardArr[i]!==0)continue;const q=[i];cmp[i]=k;while(q.length){const c=q.shift();nbFn(c).forEach(n=>{if(!mSet.has(n)&&cmp[n]<0){cmp[n]=k;if(boardArr[n]===0)q.push(n);}});}k++;}
+  for(let i=0;i<tot;i++){if(!mSet.has(i)&&cmp[i]<0&&boardArr[i]>0){cmp[i]=k;k++;}}
+  return{cmp,k};
+}
+
+function doMetrics(){
+  bv3val=calc3BV(mines,board,cfg.cols,cfg.rows);
+  zinival=calcZini(mines,board,cfg.cols,cfg.rows);
+  G('s3bv').querySelector('.sv').textContent=bv3val;
+  G('szini').querySelector('.sv').textContent=zinival;
+  const cm=buildCmpMap(mines,board,cfg.cols,cfg.rows);
+  cmpOf=cm.cmp;nCmps=cm.k;
+}
+function countSolved(){
+  if(!cmpOf||!nCmps)return 0;
+  const done=new Array(nCmps).fill(true);
+  for(let i=0;i<N();i++){if(mines.has(i)||cmpOf[i]<0)continue;if(!rev[i])done[cmpOf[i]]=false;}
+  return done.filter(Boolean).length;
+}
+function updStats(){
+  G('sclk').querySelector('.sv').textContent=totalClicks;
+  G('sclksub').textContent=`L:${lc} R:${rc}`;
+  if(totalClicks>0){
+    const bvs=countSolved();
+    const eff=Math.round(bvs/totalClicks*100);
+    const el=G('seff').querySelector('.sv');
+    el.textContent=eff+'%';G('seffsub').textContent=`${bvs}/${totalClicks}`;
+    el.style.color=eff>=100?'#44ff88':eff>=70?'#88ff44':eff>=50?'#ffcc44':'#ff8888';
+  }else{G('seff').querySelector('.sv').textContent='—';G('seff').querySelector('.sv').style.color='';G('seffsub').textContent='solved/clicks';}
+}
+
+// ══════════════════════════════════════════════════════════
+//  MBF EXPORT
+//  Format: [cols][rows][mines>>8][mines&0xFF] then [x][y] per mine
+//  All 1-byte unsigned integers. x=col (0-based), y=row (0-based).
+// ══════════════════════════════════════════════════════════
+function buildMBF(mSet,cols,rows,mineCount){
+  const bytes=[];
+  bytes.push(cols&0xFF);
+  bytes.push(rows&0xFF);
+  bytes.push((mineCount>>8)&0xFF);
+  bytes.push(mineCount&0xFF);
+  // mines sorted by position for determinism
+  const sorted=[...mSet].sort((a,b)=>a-b);
+  for(const pos of sorted){
+    const x=pos%cols;  // column (0-based) = x
+    const y=Math.floor(pos/cols); // row (0-based) = y
+    bytes.push(x&0xFF);
+    bytes.push(y&0xFF);
+  }
+  return new Uint8Array(bytes);
+}
+
+function mbfHex(mSet,cols,rows,mineCount){
+  const arr=buildMBF(mSet,cols,rows,mineCount);
+  return Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join(' ');
+}
+
+function downloadMBF(){
+  if(!started||!mines.size)return;
+  const arr=buildMBF(mines,cfg.cols,cfg.rows,cfg.mines);
+  const blob=new Blob([arr],{type:'application/octet-stream'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`board_${cfg.cols}x${cfg.rows}_${cfg.mines}mines_3bv${bv3val}.mbf`;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+// ── export/import URL ──
+function encM(ms,c,r){const tot=c*r,nC=Math.ceil(tot/5);let s='';for(let i=0;i<nC;i++){let v=0;for(let b=0;b<5;b++){const p=i*5+(4-b);if(p<tot&&ms.has(p))v|=(1<<b);}s+=B36[v];}return s;}
+function updExport(){
+  if(!started||!mines.size)return;
+  const m=encM(mines,cfg.cols,cfg.rows);
+  const pv=`https://pttacgfans.github.io/Minesweeper-ZiNi-Calculator/?b=${cfg.cols}${cfg.rows}&m=${m}`;
+  const lv=`https://llamasweeper.com/#/game/zini-explorer?b=${String(cfg.cols).padStart(2,'0')}${String(cfg.rows).padStart(2,'0')}&m=${m}&d=1`;
+  const jv=`https://davidnhill.github.io/JSMinesweeper/index.html?board=${cfg.cols}x${cfg.rows}x${cfg.mines}`;
+  G('ujsm').textContent=jv;G('uptta').textContent=pv;G('ullama').textContent=lv;
+  G('xjsm').href=jv;G('xptta').href=pv;G('xllama').href=lv;
+  G('cjsm').onclick=()=>cp(jv,'cjsm');G('cptta').onclick=()=>cp(pv,'cptta');G('cllama').onclick=()=>cp(lv,'cllama');
+  // MBF hex
+  const hex=mbfHex(mines,cfg.cols,cfg.rows,cfg.mines);
+  G('umbf').textContent=hex;
+  G('cmbfhex').onclick=()=>cp(hex,'cmbfhex');
+}
+function cp(t,id){const e=G(id);const done=()=>{const o=e.textContent;e.textContent='✓';e.classList.add('ok');setTimeout(()=>{e.textContent=o;e.classList.remove('ok');},2000);};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done).catch(()=>{fb(t);done();});else{fb(t);done();}function fb(x){const a=document.createElement('textarea');a.value=x;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);}}
+
+function decM(m,c,r){const tot=c*r,ms=new Set();for(let i=0;i<m.length;i++){const v=b36v(m[i]);for(let b=0;b<5;b++){const p=i*5+(4-b);if(p<tot&&(v&(1<<b)))ms.add(p);}}return ms;}
+function parseImp(raw){
+  raw=raw.trim();
+  const s=raw.match(/^(\d+)x(\d+)x(\d+)\s+([0-9a-z]+)$/i);if(s)return{cols:+s[1],rows:+s[2],mStr:s[4]};
+  let mStr=null,cols=null,rows=null;
+  try{let ss=raw;const hi=raw.indexOf('#');if(hi>=0){const ah=raw.slice(hi+1);const qi=ah.indexOf('?');if(qi>=0)ss=ah.slice(qi);}if(!ss.startsWith('?'))ss='?'+ss;const url=new URL('https://x.com'+ss);const p=url.searchParams;mStr=p.get('m');const bo=p.get('board');const b=p.get('b');if(bo){const m=bo.match(/^(\d+)x(\d+)/);if(m){cols=+m[1];rows=+m[2];}}if(!cols&&b&&/^\d+$/.test(b)){const len=b.length;if(len===2){cols=+b[0];rows=+b[1];}else if(len===4){const h1=+b.slice(0,2),h2=+b.slice(2);if(h1>0&&h2>0){cols=h1;rows=h2;}}}}catch(e){}
+  if(!mStr){const mm=raw.match(/[?&]m=([0-9a-z]+)/i);if(mm)mStr=mm[1];}
+  if(!mStr)return null;
+  if(!cols||!rows){const t=mStr.length*5;if(t<=85){cols=9;rows=9;}else if(t<=260){cols=16;rows=16;}else{cols=30;rows=16;}}
+  return{cols,rows,mStr};
+}
+function doImport(raw){
+  const p=parseImp(raw);if(!p){setIst('✗ Cannot parse URL','err');return false;}
+  const{cols,rows,mStr}=p;
+  if(cols<2||rows<2||cols>100||rows>100){setIst(`✗ Size ${cols}×${rows} out of range`,'err');return false;}
+  const mSet=decM(mStr,cols,rows);if(!mSet.size){setIst('✗ No mines found','err');return false;}
+  loadBoard(cols,rows,mSet.size,mSet);
+  setIst(`✓ Loaded ${cols}×${rows} — ${mSet.size} mines`,'ok');
+  return true;
+}
+function setIst(t,c){const e=G('ist');e.textContent=t;e.className='ist '+c;}
+
+function loadBoard(cols,rows,mineCount,mSet){
+  clearAll();cfg={cols,rows,mines:mineCount};mines=new Set(mSet);
+  board=buildBoard(mines,cols,rows);
+  rev=new Array(N()).fill(false);flagged=new Array(N()).fill(false);
+  started=true;doMetrics();enableAll();snaps=[mkSnap()];
+  document.querySelectorAll('.btn[data-d]').forEach(x=>x.classList.remove('sel'));
+  lcdUpd();render();if(expOpen)updExport();
+}
+
+// ══════════════════════════════════════════════════════════
+//  BOARD GENERATOR
+//  Generates random boards until one meets the 3BV and/or
+//  efficiency (3BV/ZiNi×100) thresholds.
+//  Runs asynchronously so the UI stays responsive.
+// ══════════════════════════════════════════════════════════
+async function runGenerator(){
+  if(genRunning)return;
+  genRunning=true;
+  G('bgengo').disabled=true;G('bgenstop').disabled=false;
+  const d=genDiff;
+  const {cols,rows,mines:mineCount}=d;
+  const tot=cols*rows;
+  const min3bv=Math.max(0,+G('g3bv-min').value||0);
+  const max3bv=Math.max(0,+G('g3bv-max').value||0);
+  const minEff=Math.max(0,+G('geff-min').value||0); // percentage
+  const maxTries=Math.max(1,+G('gmaxtries').value||500);
+
+  G('gstatus').textContent=`Searching… (0/${maxTries})`;
+  G('gpbar').style.width='0%';
+  setMsg('[ GENERATING BOARD… ]','gen');
+
+  // Build safe-first-click protection: exclude center area
+  // We generate plain random boards (no safe-first guarantee for metric boards)
+  function randomBoard(safeExclude){
+    const ms=new Set();
+    while(ms.size<mineCount){
+      const r=Math.floor(Math.random()*tot);
+      if(!safeExclude||!safeExclude.has(r))ms.add(r);
+    }
+    return ms;
+  }
+
+  // We check metrics in batches to keep UI responsive
+  const batchSize=10;
+  let found=null;
+  let tried=0;
+
+  while(tried<maxTries&&genRunning){
+    for(let b=0;b<batchSize&&tried<maxTries&&genRunning;b++){
+      tried++;
+      const mSet=randomBoard(null);
+      const bArr=buildBoard(mSet,cols,rows);
+      const bv=calc3BV(mSet,bArr,cols,rows);
+      // 3BV check
+      if(min3bv>0&&bv<min3bv)continue;
+      if(max3bv>0&&bv>max3bv)continue;
+      // Efficiency check: only compute ZiNi if needed (expensive)
+      if(minEff>0){
+        const zn=calcZini(mSet,bArr,cols,rows);
+        const eff=zn>0?Math.round(bv/zn*100):100;
+        if(eff<minEff)continue;
+        // Found!
+        found={mSet,bv,zn,eff};
+      } else {
+        found={mSet,bv,zn:null,eff:null};
+      }
+      break;
+    }
+    if(found)break;
+    // Update progress every batch
+    const pct=Math.round(tried/maxTries*100);
+    G('gstatus').textContent=`Searching… (${tried}/${maxTries})`;
+    G('gpbar').style.width=pct+'%';
+    // Yield to UI
+    await new Promise(r=>setTimeout(r,0));
+  }
+
+  genRunning=false;
+  G('bgengo').disabled=false;G('bgenstop').disabled=true;
+
+  if(found){
+    loadBoard(cols,rows,mineCount,found.mSet);
+    const effStr=found.eff!==null?` Eff=${found.eff}%`:'';
+    G('gstatus').textContent=`✓ Found! 3BV=${found.bv}${effStr} (${tried} tries)`;
+    G('gpbar').style.width='100%';
+    setMsg(`[ BOARD GENERATED — 3BV=${found.bv}${effStr} ]`,'gen');
+  } else {
+    G('gstatus').textContent=`✗ Not found in ${tried} tries. Relax filters?`;
+    G('gpbar').style.width='100%';
+    setMsg('[ GENERATION FAILED — TRY RELAXING FILTERS ]','im');
+  }
+}
+
+// ── MODE ──
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mtab').forEach(t=>{t.className='mtab';});
+  document.querySelector(`.mtab[data-m="${m}"]`).classList.add('m'+m);
+  const hl={0:['Hint','Auto-Solve (Flag)'],1:['Eff. Hint','Auto-Solve (Eff.)'],2:['NF Hint','Auto-Solve (NF)']};
+  G('bhint').textContent=hl[m][0];G('bsolve').textContent=hl[m][1];
+}
+
+// ── SNAP / STATE ──
+function mkSnap(){return{rev:[...rev],flagged:[...flagged],lc,rc,totalClicks,over,won,secs};}
+function rst(s){rev=[...s.rev];flagged=[...s.flagged];lc=s.lc;rc=s.rc;totalClicks=s.totalClicks;over=s.over;won=s.won;secs=s.secs;}
+function lcdF(n){return String(Math.max(0,Math.min(999,Math.round(n)))).padStart(3,'0');}
+function lcdUpd(){G('lm').textContent=lcdF(cfg.mines-flagged.filter(Boolean).length);G('lt').textContent=lcdF(secs);}
+function setFace(s){G('face').textContent=s;}
+function setMsg(t,c){const e=G('msg');e.textContent=t;e.className=c||'';}
+function enableAll(){['bhint','bsolve','bprob','bundo','bexp'].forEach(id=>G(id).disabled=false);}
+function disActns(){['bhint','bsolve','bprob','bexp'].forEach(id=>G(id).disabled=true);}
+function rec(m){hist.push(m);snaps.push(mkSnap());}
+function clearAll(){
+  clearInterval(timerInt);clearInterval(rpTimer);timerInt=null;
+  solving=false;rpMode=false;rpPlaying=false;probMode=false;probData={};
+  secs=0;started=false;over=false;won=false;lc=0;rc=0;totalClicks=0;
+  hs={cells:[],types:{}};hist=[];snaps=[];bv3val=0;zinival=0;cmpOf=null;nCmps=0;expOpen=false;
+}
+function init(){
+  clearAll();
+  G('edrw').classList.remove('on');G('idrw').classList.remove('on');G('gdrw').classList.remove('on');G('rpp').classList.remove('on');
+  lcdUpd();setMsg('','');
+  G('s3bv').querySelector('.sv').textContent='—';G('szini').querySelector('.sv').textContent='—';
+  G('sclk').querySelector('.sv').textContent='0';G('sclksub').textContent='L:0 R:0';
+  G('seff').querySelector('.sv').textContent='—';G('seff').querySelector('.sv').style.color='';G('seffsub').textContent='solved/clicks';
+  ['bhint','bsolve','bprob','bexp'].forEach(id=>G(id).disabled=true);G('bundo').disabled=true;
+  board=[];rev=[];flagged=[];mines=new Set();
+  for(let i=0;i<N();i++){board.push(0);rev.push(false);flagged.push(false);}
+  setFace('🙂');render();
+}
+
+function placeMines(safe){
+  const sx=new Set([safe,...nb(safe)]);let p=0;
+  while(p<cfg.mines){const r=Math.floor(Math.random()*N());if(!mines.has(r)&&!sx.has(r)){mines.add(r);p++;}}
+  board=buildBoard(mines,cfg.cols,cfg.rows);
+  doMetrics();enableAll();
+  // snap[0] = zero clicks
+  const sl=lc,sr=rc,st=totalClicks;lc=0;rc=0;totalClicks=0;snaps=[mkSnap()];lc=sl;rc=sr;totalClicks=st;
+  if(expOpen)updExport();
+}
+function revAllMines(){for(let i=0;i<N();i++)if(mines.has(i))rev[i]=true;}
+function flood(i){const s=[i];while(s.length){const c=s.pop();if(rev[c]||flagged[c])continue;rev[c]=true;if(board[c]===0)nb(c).forEach(n=>{if(!rev[n])s.push(n);});}}
+
+// ── GAME ACTIONS ──
+function doRev(i){
+  if(over||won||rev[i]||flagged[i]||rpMode)return;
+  lc++;totalClicks++;setFace('😮');hs={cells:[],types:{}};probMode=false;
+  if(!started){started=true;placeMines(i);timerInt=setInterval(()=>{secs++;lcdUpd();},1000);}
+  else if(!timerInt&&!over&&!won){timerInt=setInterval(()=>{secs++;lcdUpd();},1000);}
+  if(board[i]===-1){
+    revAllMines();rec({t:'r',i});over=true;snaps.push(mkSnap());
+    updStats();render();clearInterval(timerInt);timerInt=null;disActns();setFace('😵');
+    const el=document.querySelector(`.cell[data-i="${i}"]`);if(el)el.classList.add('xp');
+    setMsg('[ DETONATED ]','lose');setTimeout(()=>showRP(),600);return;
+  }
+  flood(i);rec({t:'r',i});updStats();checkWin();if(expOpen)updExport();render();if(!won&&!over)setFace('🙂');
+}
+function doChord(i){
+  if(over||won||!rev[i]||board[i]<=0||rpMode)return;
+  const ns=nb(i),fc=ns.filter(n=>flagged[n]).length;if(fc!==board[i])return;
+  lc++;totalClicks++;hs={cells:[],types:{}};probMode=false;
+  let hit=false;ns.forEach(n=>{if(!flagged[n]&&!rev[n]){if(mines.has(n)){rev[n]=true;hit=true;}else flood(n);}});
+  rec({t:'ch',i});updStats();
+  if(hit){revAllMines();over=true;snaps.push(mkSnap());render();clearInterval(timerInt);timerInt=null;disActns();setFace('😵');setTimeout(()=>{const el=document.querySelector('.mr');if(el)el.classList.add('xp');},30);setMsg('[ DETONATED ]','lose');setTimeout(()=>showRP(),600);}
+  else{checkWin();if(expOpen)updExport();render();}
+}
+function doFlag(i){
+  if(over||won||rev[i]||rpMode)return;
+  flagged[i]=!flagged[i];if(flagged[i])rc++;else if(rc>0)rc--;
+  totalClicks++;lcdUpd();rec({t:'f',i});hs={cells:[],types:{}};probMode=false;
+  updStats();if(expOpen)updExport();render();G('bundo').disabled=false;
+}
+function checkWin(){
+  if(board.filter((_,i)=>!mines.has(i)&&!rev[i]).length===0){
+    clearInterval(timerInt);timerInt=null;won=true;
+    for(let i=0;i<N();i++)if(mines.has(i)){rev[i]=true;flagged[i]=true;}
+    snaps.push(mkSnap());hist.push({t:'win'});
+    updStats();lcdUpd();disActns();setFace('😎');setMsg('[ FIELD CLEARED ]','win');setTimeout(()=>showRP(),600);
+  }
+}
+function doUndo(){
+  if(rpMode||snaps.length<2)return;
+  snaps.pop();hist.pop();rst(snaps[snaps.length-1]);
+  if(won||over){won=false;over=false;enableAll();}
+  if(snaps.length<2)G('bundo').disabled=true;
+  hs={cells:[],types:{}};probMode=false;setFace('🙂');setMsg('','');
+  lcdUpd();updStats();if(expOpen)updExport();
+  if(started&&!timerInt&&!over&&!won)timerInt=setInterval(()=>{secs++;lcdUpd();},1000);
+  render();
+}
+
+// ── SOLVER ──
+function logicSolve(){
+  const S=new Set(),M=new Set();let ch=true;
+  while(ch){ch=false;const co=[];
+    for(let i=0;i<N();i++){if(!rev[i]||board[i]<=0)continue;const ns=nb(i);const uk=ns.filter(n=>!rev[n]&&!flagged[n]&&!M.has(n)&&!S.has(n));const km=ns.filter(n=>flagged[n]||M.has(n)).length;const rm=board[i]-km;if(rm<0||!uk.length)continue;co.push({uk,rm});if(rm===0)uk.forEach(n=>{S.add(n);ch=true;});if(rm===uk.length)uk.forEach(n=>{M.add(n);ch=true;});}
+    for(let a=0;a<co.length;a++)for(let b=0;b<co.length;b++){if(a===b)continue;const A=co[a],B=co[b];if(!A.uk.length||A.uk.length>=B.uk.length)continue;const sB=new Set(B.uk);if(!A.uk.every(x=>sB.has(x)))continue;const df=B.uk.filter(x=>!A.uk.includes(x)),dm=B.rm-A.rm;if(dm===0&&df.length)df.forEach(x=>{S.add(x);ch=true;});else if(dm>0&&dm===df.length)df.forEach(x=>{M.add(x);ch=true;});}
+  }
+  return{safe:[...S].filter(i=>!rev[i]&&!flagged[i]),danger:[...M].filter(i=>!rev[i]&&!flagged[i])};
+}
+function calcProbs(){
+  const uk=[];for(let i=0;i<N();i++)if(!rev[i]&&!flagged[i])uk.push(i);
+  if(!uk.length)return{};
+  const p={};
+  for(const u of uk){const rn=nb(u).filter(n=>rev[n]&&board[n]>0);if(!rn.length){p[u]=null;continue;}let v=0;for(const r of rn){const un=nb(r).filter(n=>!rev[n]&&!flagged[n]).length,fl=nb(r).filter(n=>flagged[n]).length;if(un>0)v+=(board[r]-fl)/un;}p[u]=Math.max(0,Math.min(1,v/rn.length));}
+  const rem=cfg.mines-flagged.filter(Boolean).length;const gl=rem/Math.max(uk.length,1);
+  uk.filter(u=>p[u]===null).forEach(u=>{p[u]=gl;});return p;
+}
+function bestGuess(probs){
+  const uk=Object.keys(probs).map(Number).filter(i=>!rev[i]&&!flagged[i]);if(!uk.length)return null;
+  const corner=i=>(i%cfg.cols===0||i%cfg.cols===cfg.cols-1)&&(Math.floor(i/cfg.cols)===0||Math.floor(i/cfg.cols)===cfg.rows-1);
+  const edge=i=>i%cfg.cols===0||i%cfg.cols===cfg.cols-1||Math.floor(i/cfg.cols)===0||Math.floor(i/cfg.cols)===cfg.rows-1;
+  uk.sort((a,b)=>{const pa=probs[a]??0.5,pb=probs[b]??0.5;if(Math.abs(pa-pb)>0.02)return pa-pb;const na=nb(a).filter(n=>rev[n]&&board[n]>0).length,nb2=nb(b).filter(n=>rev[n]&&board[n]>0).length;if(na!==nb2)return nb2-na;if(corner(a)&&!corner(b))return -1;if(corner(b)&&!corner(a))return 1;if(edge(a)&&!edge(b))return -1;if(edge(b)&&!edge(a))return 1;return 0;});
+  return{i:uk[0],p:probs[uk[0]]??0.5};
+}
+function estimateReveal(cells){
+  const v=new Set();cells.forEach(u=>{const s=[u];while(s.length){const c=s.pop();if(v.has(c)||rev[c])continue;v.add(c);if(board[c]===0)nb(c).forEach(n=>{if(!v.has(n)&&!rev[n]&&!mines.has(n))s.push(n);});}});return v.size;
+}
+function effBestMove(allowFlags){
+  const{safe,danger}=logicSolve();let best=null;
+  for(let i=0;i<N();i++){
+    if(!rev[i]||board[i]<=0)continue;const ns=nb(i);const fc=ns.filter(n=>flagged[n]).length;if(fc!==board[i])continue;
+    const ukSafe=ns.filter(n=>!rev[n]&&!flagged[n]);if(!ukSafe.length)continue;
+    const clears=estimateReveal(ukSafe);if(!clears)continue;
+    const sc=clears;if(!best||sc>best.sc)best={t:'chord',num:i,flags:[],safe:ukSafe,sc,cost:1,clears};
+  }
+  if(allowFlags&&danger.length){
+    for(let numCell=0;numCell<N();numCell++){
+      if(!rev[numCell]||board[numCell]<=0)continue;const ns=nb(numCell);
+      const fc=ns.filter(n=>flagged[n]).length;const rm=board[numCell]-fc;if(rm<=0)continue;
+      const unkAll=ns.filter(n=>!rev[n]&&!flagged[n]);
+      const dm=unkAll.filter(n=>danger.includes(n));const ds=unkAll.filter(n=>safe.includes(n));
+      if(dm.length!==rm||!ds.length)continue;
+      const newFlags=dm.filter(n=>!flagged[n]);const cost=newFlags.length+1;
+      const clears=estimateReveal(ds);if(!clears)continue;
+      if(newFlags.length>0&&cost>=clears)continue;
+      const sc=clears/cost;if(!best||sc>best.sc)best={t:'chord',num:numCell,flags:newFlags,safe:ds,sc,cost,clears};
+    }
+  }
+  for(const s of safe){if(rev[s]||flagged[s])continue;const clears=estimateReveal([s]);if(!clears)continue;if(!best||clears>best.sc)best={t:'rev',i:s,sc:clears,cost:1,clears};}
+  return best;
+}
+
+function showHint(){
+  if(over||won)return;probMode=false;hs={cells:[],types:{}};
+  const{safe,danger}=logicSolve();
+  if(mode===0)hintRegular(safe,danger);
+  else if(mode===1)hintEff(safe,danger,true);
+  else hintNF(safe);
+  render();
+}
+function hintRegular(safe,danger){
+  if(danger.length){danger.forEach(c=>{hs.types[c]='hm';});hs.cells=[...danger];setMsg(`[ FLAG ${danger.length} MINE${danger.length>1?'S':''} ]`,'im');return;}
+  if(safe.length){const bl=safe.filter(i=>board[i]===0);const pk=bl.length?bl[0]:safe[0];hs.types[pk]='hs';safe.filter(i=>i!==pk).forEach(c=>{hs.types[c]='hs hs2';});hs.cells=safe;setMsg(`[ ${safe.length} SAFE ]`,'is');return;}
+  const p=calcProbs();const g=bestGuess(p);if(g){hs.types[g.i]='hg';hs.cells=[g.i];setMsg(`[ GUESS ~${Math.round((1-g.p)*100)}% SAFE ]`,'ig');}else setMsg('[ NO HINT ]','ii');
+}
+function hintEff(safe,danger,af){
+  const act=effBestMove(af);
+  if(!act){const p=calcProbs();const g=bestGuess(p);if(g){hs.types[g.i]='hg';hs.cells=[g.i];setMsg(`[ GUESS ~${Math.round((1-g.p)*100)}% SAFE ]`,'ig');}else setMsg('[ NO HINT ]','ii');return;}
+  if(act.t==='rev'){hs.types[act.i]='ho';hs.cells=[act.i];setMsg(`[ OPEN → ~${act.clears} cell${act.clears>1?'s':''} ]`,'ie');}
+  else{act.flags.forEach(c=>{hs.types[c]='hf';});act.safe.forEach(c=>{hs.types[c]='hc';});hs.types[act.num]='ho';hs.cells=[act.num,...act.flags,...act.safe];setMsg(act.flags.length>0?`[ FLAG ${act.flags.length} → CHORD (${act.clears}/${act.cost}) ]`:`[ CHORD → ${act.clears} cells ]`,'ie');}
+}
+function hintNF(safe){
+  if(safe.length){const bl=safe.filter(i=>board[i]===0);const pk=bl.length?bl[0]:safe[0];hs.types[pk]='hs';safe.filter(i=>i!==pk).forEach(c=>{hs.types[c]='hs hs2';});hs.cells=safe;setMsg(`[ NF: ${safe.length} SAFE ]`,'is');return;}
+  const p=calcProbs();const g=bestGuess(p);if(g){hs.types[g.i]='hg';hs.cells=[g.i];setMsg(`[ NF GUESS ~${Math.round((1-g.p)*100)}% SAFE ]`,'ig');}else setMsg('[ NO HINT ]','ii');
+}
+
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+async function runSolver(){
+  if(over||won||solving)return;if(!started){setMsg('[ CLICK A CELL FIRST ]','ii');return;}
+  solving=true;disActns();hs={cells:[],types:{}};
+  if(mode===0)await loopRegular();else if(mode===1)await loopEff();else await loopNF();
+}
+function solverExplode(idx){
+  revAllMines();over=true;snaps.push(mkSnap());updStats();render();
+  clearInterval(timerInt);timerInt=null;disActns();setFace('😵');
+  if(idx!=null){const el=document.querySelector(`.cell[data-i="${idx}"]`);if(el)el.classList.add('xp');}
+  else{setTimeout(()=>{const el=document.querySelector('.mr');if(el)el.classList.add('xp');},30);}
+  setMsg('[ DETONATED ]','lose');setTimeout(()=>showRP(),600);
+}
+
+async function loopRegular(){
+  async function step(){
+    if(over||won||!solving)return;
+    const{safe,danger}=logicSolve();let acted=false;
+    for(const m of danger){if(!flagged[m]&&!rev[m]){flagged[m]=true;rc++;totalClicks++;rec({t:'f',i:m});acted=true;}}
+    if(acted){lcdUpd();updStats();if(expOpen)updExport();render();await delay(50);}
+    for(let i=0;i<N();i++){if(!rev[i]||board[i]<=0)continue;const ns=nb(i),fc=ns.filter(n=>flagged[n]).length,uk=ns.filter(n=>!rev[n]&&!flagged[n]);if(fc===board[i]&&uk.length){lc++;totalClicks++;rec({t:'ch',i});let hit=false;uk.forEach(n=>{if(!flagged[n]&&!rev[n]){if(mines.has(n)){rev[n]=true;hit=true;}else flood(n);}});updStats();if(hit){solverExplode(null);return;}acted=true;}}
+    for(const s of safe){if(!rev[s]&&!flagged[s]){lc++;totalClicks++;rec({t:'r',i:s});flood(s);acted=true;}}
+    if(acted){updStats();checkWin();if(expOpen)updExport();render();if(won||over)return;await delay(70);step();return;}
+    const p=calcProbs();const g=bestGuess(p);const cands=Object.keys(p).map(Number).filter(i=>!rev[i]&&!flagged[i]);
+    if(!cands.length){checkWin();return;}
+    const pk=g?g.i:cands[0];lc++;totalClicks++;rec({t:'r',i:pk});
+    if(mines.has(pk)){solverExplode(pk);return;}
+    flood(pk);updStats();checkWin();if(expOpen)updExport();render();if(!won&&!over){await delay(90);step();}
+  }
+  await delay(50);step();
+}
+async function loopEff(){
+  async function step(){
+    if(over||won||!solving)return;
+    const act=effBestMove(true);
+    if(act){
+      if(act.t==='rev'){lc++;totalClicks++;rec({t:'r',i:act.i});flood(act.i);}
+      else{
+        for(const n of act.flags){if(!flagged[n]){flagged[n]=true;rc++;totalClicks++;rec({t:'f',i:n});}}
+        lcdUpd();lc++;totalClicks++;rec({t:'ch',i:act.num});
+        let hit=false;act.safe.forEach(n=>{if(!rev[n]){if(mines.has(n)){rev[n]=true;hit=true;}else flood(n);}});
+        updStats();if(hit){solverExplode(null);return;}
+      }
+      updStats();checkWin();if(expOpen)updExport();render();if(won||over)return;await delay(65);step();
+    }else{
+      const p=calcProbs();const g=bestGuess(p);const cands=Object.keys(p).map(Number).filter(i=>!rev[i]&&!flagged[i]);
+      if(!cands.length){checkWin();return;}
+      const pk=g?g.i:cands[0];lc++;totalClicks++;rec({t:'r',i:pk});
+      if(mines.has(pk)){solverExplode(pk);return;}
+      flood(pk);updStats();checkWin();if(expOpen)updExport();render();if(!won&&!over){await delay(90);step();}
+    }
+  }
+  await delay(50);step();
+}
+async function loopNF(){
+  async function step(){
+    if(over||won||!solving)return;
+    const act=effBestMove(false);
+    if(act){
+      if(act.t==='rev'){lc++;totalClicks++;rec({t:'r',i:act.i});flood(act.i);}
+      else{lc++;totalClicks++;rec({t:'ch',i:act.num});let hit=false;act.safe.forEach(n=>{if(!rev[n]){if(mines.has(n)){rev[n]=true;hit=true;}else flood(n);}});updStats();if(hit){solverExplode(null);return;}}
+      updStats();checkWin();if(expOpen)updExport();render();if(won||over)return;await delay(65);step();
+    }else{
+      const p=calcProbs();const g=bestGuess(p);const cands=Object.keys(p).map(Number).filter(i=>!rev[i]&&!flagged[i]);
+      if(!cands.length){checkWin();return;}
+      const pk=g?g.i:cands[0];lc++;totalClicks++;rec({t:'r',i:pk});
+      if(mines.has(pk)){solverExplode(pk);return;}
+      flood(pk);updStats();checkWin();if(expOpen)updExport();render();if(!won&&!over){await delay(90);step();}
+    }
+  }
+  await delay(50);step();
+}
+
+function toggleProb(){if(!started)return;probMode=!probMode;if(probMode){probData=calcProbs();hs={cells:[],types:{}};setMsg('[ PROBABILITY MODE ]','ii');}else{probData={};setMsg('','');}render();}
+function probCol(p){return`rgb(${Math.round(p*220)},${Math.round((1-p)*200)},30)`;}
+function chHL(i,on){if(!rev[i]||board[i]<=0)return;const ns=nb(i),fc=ns.filter(n=>flagged[n]).length;if(fc!==board[i])return;ns.forEach(n=>{const el=document.querySelector(`.cell[data-i="${n}"]`);if(el&&!rev[n]&&!flagged[n]){if(on)el.classList.add('chl');else el.classList.remove('chl');}});}
+
+function render(cursor=null){
+  const bd=G('board'),cs=px,fs=Math.max(9,Math.round(cs*0.52));
+  bd.style.gridTemplateColumns=`repeat(${cfg.cols},${cs}px)`;bd.innerHTML='';
+  for(let i=0;i<N();i++){
+    const c=document.createElement('div');
+    c.className='cell';c.style.width=cs+'px';c.style.height=cs+'px';c.style.fontSize=fs+'px';c.dataset.i=i;
+    if(rev[i]){c.classList.add('rv');if(board[i]===-1){c.classList.add('mr');c.textContent='💣';c.style.fontSize=Math.round(cs*.62)+'px';}else if(board[i]>0){c.textContent=board[i];c.classList.add('n'+board[i]);}}
+    else if(flagged[i]){c.classList.add('fg');c.textContent='🚩';c.style.fontSize=Math.round(cs*.62)+'px';}
+    if(probMode&&!rev[i]&&!flagged[i]&&probData[i]!==undefined){const p=probData[i]??0;c.style.background=probCol(p);const lb=document.createElement('span');lb.className='plb';lb.textContent=Math.round(p*100)+'%';lb.style.color='#fff';c.appendChild(lb);}
+    if(!probMode&&hs.cells.includes(i)){const cls=hs.types[i]||'hs';cls.split(' ').forEach(x=>c.classList.add(x));if(cls.includes('hf')){const lb=document.createElement('span');lb.className='hlb';lb.textContent='⚑';lb.style.color='#ff8844';c.appendChild(lb);}else if(cls.includes('hc')){const lb=document.createElement('span');lb.className='hlb';lb.textContent='↻';lb.style.color='#22ffcc';c.appendChild(lb);}else if(cls.includes('ho')){const lb=document.createElement('span');lb.className='hlb';lb.textContent='★';lb.style.color='#ffcc00';c.appendChild(lb);}}
+    if(cursor===i&&rpMode)c.classList.add('rpc');
+    if(!rpMode){
+      c.addEventListener('click',e=>{e.preventDefault();if(rev[i]&&board[i]>0)doChord(i);else doRev(i);});
+      c.addEventListener('contextmenu',e=>{e.preventDefault();doFlag(i);});
+      c.addEventListener('mouseenter',()=>chHL(i,true));c.addEventListener('mouseleave',()=>chHL(i,false));
+      c.addEventListener('touchstart',e=>{e.preventDefault();lpT=setTimeout(()=>{doFlag(i);lpT=null;},500);},{passive:false});
+      c.addEventListener('touchend',e=>{e.preventDefault();if(lpT){clearTimeout(lpT);lpT=null;if(rev[i]&&board[i]>0)doChord(i);else doRev(i);}},{passive:false});
+    }
+    bd.appendChild(c);
+  }
+}
+
+// ── REPLAY ──
+function showRP(){G('rpp').classList.add('on');const sl=G('rpsl');sl.max=snaps.length-1;sl.value=snaps.length-1;rpStep=snaps.length-1;rpLbl();}
+function rpLbl(){G('rplb').textContent=`${rpStep}/${snaps.length-1}`;G('rpsl').value=rpStep;}
+function goRP(step){rpMode=true;rpStep=Math.max(0,Math.min(step,snaps.length-1));rst(snaps[rpStep]);lcdUpd();updStats();rpLbl();if(expOpen)updExport();const last=rpStep>0&&hist[rpStep-1]?hist[rpStep-1].i:null;render(last);if(rpStep===snaps.length-1){const s=snaps[snaps.length-1];setMsg(s.won?'[ FIELD CLEARED ]':'[ DETONATED ]',s.won?'win':'lose');}else setMsg(`[ STEP ${rpStep} / ${snaps.length-1} ]`,'ir');}
+function doContPlay(t){
+  rst(snaps[t]);hist=hist.slice(0,t);snaps=snaps.slice(0,t+1);
+  rpMode=false;clearInterval(rpTimer);rpPlaying=false;G('rpp').classList.remove('on');
+  solving=false;probMode=false;won=false;over=false;enableAll();
+  lcdUpd();updStats();if(started&&!timerInt)timerInt=setInterval(()=>{secs++;lcdUpd();},1000);
+  setFace('🙂');setMsg('','');hs={cells:[],types:{}};render();
+}
+function contPlay(){
+  const s=snaps[snaps.length-1];const isEnd=rpStep===snaps.length-1;let t=rpStep;
+  if(isEnd){
+    if(s.won){doContPlay(0);lc=0;rc=0;totalClicks=0;updStats();return;}
+    else if(s.over){t=Math.max(0,snaps.length-2);}
+  }
+  doContPlay(t);
+}
+function solveRP(){doContPlay(rpStep);setTimeout(runSolver,150);}
+
+// ── WIRING ──
+document.querySelectorAll('.btn[data-d]').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.btn[data-d]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');cfg=DIFFS[b.dataset.d];init();});});
+document.querySelectorAll('.btn[data-th]').forEach(b=>{b.addEventListener('click',()=>{theme=b.dataset.th;const a=G('ms');a.classList.remove('msonline','dark','classic');a.classList.add(theme);lcdUpd();render();});});
+document.querySelectorAll('.mtab').forEach(b=>{b.addEventListener('click',()=>setMode(+b.dataset.m));});
+G('pxsel').addEventListener('change',e=>{px=+e.target.value;render();});
+G('bnew').addEventListener('click',()=>{solving=false;clearInterval(rpTimer);init();});
+G('face').addEventListener('click',()=>{solving=false;clearInterval(rpTimer);init();});
+G('bhint').addEventListener('click',showHint);
+G('bprob').addEventListener('click',toggleProb);
+G('bundo').addEventListener('click',doUndo);
+G('bexp').addEventListener('click',()=>{expOpen=!expOpen;G('edrw').classList.toggle('on');if(expOpen&&started&&mines.size)updExport();});
+G('bimp').addEventListener('click',()=>{G('idrw').classList.toggle('on');G('ist').textContent='';G('ist').className='ist';});
+G('bclim').addEventListener('click',()=>G('idrw').classList.remove('on'));
+G('bdoim').addEventListener('click',()=>{if(doImport(G('iurl').value))setTimeout(()=>G('idrw').classList.remove('on'),1200);});
+G('iurl').addEventListener('keydown',e=>{if(e.key==='Enter')G('bdoim').click();});
+G('bsolve').addEventListener('click',runSolver);
+G('bgen').addEventListener('click',()=>{G('gdrw').classList.toggle('on');});
+// Generator board select
+document.querySelectorAll('.btn[data-gb]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.btn[data-gb]').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');genDiff=DIFFS[b.dataset.gb];
+  });
+});
+G('bgengo').addEventListener('click',runGenerator);
+G('bgenstop').addEventListener('click',()=>{genRunning=false;G('bgenstop').disabled=true;G('bgengo').disabled=false;G('gstatus').textContent='Stopped.';});
+G('dmbf').addEventListener('click',downloadMBF);
+G('rpf').addEventListener('click',()=>{clearInterval(rpTimer);rpPlaying=false;G('rppl').textContent='▶ Play';goRP(0);});
+G('rpp2').addEventListener('click',()=>{clearInterval(rpTimer);rpPlaying=false;G('rppl').textContent='▶ Play';goRP(rpStep-1);});
+G('rpn').addEventListener('click',()=>{clearInterval(rpTimer);rpPlaying=false;G('rppl').textContent='▶ Play';goRP(rpStep+1);});
+G('rpl').addEventListener('click',()=>{clearInterval(rpTimer);rpPlaying=false;G('rppl').textContent='▶ Play';goRP(snaps.length-1);});
+G('rppl').addEventListener('click',()=>{if(rpPlaying){clearInterval(rpTimer);rpPlaying=false;G('rppl').textContent='▶ Play';}else{rpPlaying=true;G('rppl').textContent='⏸ Pause';if(rpStep>=snaps.length-1)goRP(0);rpTimer=setInterval(()=>{if(rpStep>=snaps.length-1){clearInterval(rpTimer);rpPlaying=false;G('rppl').textContent='▶ Play';return;}goRP(rpStep+1);},380);}});
+G('rpsl').addEventListener('input',e=>{clearInterval(rpTimer);rpPlaying=false;G('rppl').textContent='▶ Play';goRP(+e.target.value);});
+G('rpcont').addEventListener('click',contPlay);G('rpsolve').addEventListener('click',solveRP);
+init();
+</script>
