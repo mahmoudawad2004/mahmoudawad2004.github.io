@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Minesweeper E-Sports Ultimate</title>
+    <style>
+        :root { --cell-size: 28px; --font-size: 16px; }
+
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f0f0f0; margin-top: 20px; direction: ltr; }
+        .control-panel { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; width: 95%; max-width: 700px; text-align: center; border-top: 5px solid #6f42c1;}
+        
+        .section-title { font-size: 14px; font-weight: bold; color: #555; margin: 15px 0 5px; text-align: left; border-bottom: 1px solid #eee; padding-bottom: 5px;}
+        .input-row { display: flex; justify-content: space-between; gap: 10px; margin-top: 5px; text-align: left; align-items: center;}
+        .input-row select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 14px;}
+        .control-panel textarea { display: none; }
+        
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;}
+        button { padding: 10px 15px; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s;}
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-play-bg { background-color: #28a745; } .btn-play-bg:hover { background-color: #218838; }
+        .btn-play-in { background-color: #17a2b8; } .btn-play-in:hover { background-color: #138496; }
+        .btn-play-ex { background-color: #dc3545; } .btn-play-ex:hover { background-color: #c82333; }
+        .btn-theme { background-color: #343a40; } .btn-theme:hover { background-color: #23272b; }
+        .btn-paste { background-color: #555; } .btn-paste:hover { background-color: #333; }
+        .btn-analyze { background-color: #ff9800; } .btn-analyze:hover { background-color: #e68a00; }
+        .btn-auto { background-color: #6f42c1; animation: pulse 2s infinite; } .btn-auto:hover { background-color: #59339d; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(111, 66, 193, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(111, 66, 193, 0); } 100% { box-shadow: 0 0 0 0 rgba(111, 66, 193, 0); } }
+
+        /* Dashboard & Smiley */
+        .dashboard { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: max-content; background: #bdbdbd; padding: 10px; border: 3px solid #7b7b7b; border-right-color: #fff; border-bottom-color: #fff; box-sizing: border-box; gap: 20px; margin: 0 auto 5px auto;}
+        .dash-box { background: black; color: red; font-family: 'Courier New', Courier, monospace; font-size: 28px; font-weight: bold; padding: 2px 5px; border: 2px solid #777; border-top-color: #333; border-left-color: #333; min-width: 60px; text-align: center; line-height: 1;}
+        
+        #smiley-btn { width: 42px; height: 42px; background-color: #ccc; border: 3px solid #eee; border-right-color: #777; border-bottom-color: #777; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 26px; user-select: none; }
+        #smiley-btn:active, #smiley-btn.pressed-visual { border: 3px solid #777; border-right-color: #eee; border-bottom-color: #eee; }
+        
+        /* Live Stats Panel */
+        .stats-panel { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; max-width: max-content; background: #222; color: #0f0; padding: 8px 15px; margin-bottom: 15px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; font-size: 13px; font-weight: bold; border: 2px solid #444; box-shadow: 0 4px 6px rgba(0,0,0,0.3);}
+        .stat-item { background: #111; padding: 4px 8px; border-radius: 3px; border: 1px solid #333;}
+        .stat-item span:first-child { color: #aaa; margin-right: 5px; }
+
+        #board-wrapper { width: 95vw; overflow-x: auto; display: flex; justify-content: center; padding-bottom: 10px;}
+        
+        /* Review Navigation Panel */
+        .review-panel { background: #e9ecef; padding: 10px; border-radius: 8px; margin-top: 5px; margin-bottom: 15px; display: none; align-items: center; justify-content: center; gap: 10px; width: 100%; max-width: 500px; border: 2px solid #ced4da;}
+        .review-panel button { background: #495057; padding: 6px 10px; font-size: 12px;}
+        .review-panel button:hover { background: #6c757d; }
+        #nav-slider { flex: 1; cursor: pointer; }
+        #review-counter { font-family: monospace; font-size: 14px; font-weight: bold; width: 60px; text-align: center; }
+
+        /* Themes */
+        #board { display: grid; gap: 2px; background-color: #999; padding: 2px; border: 3px solid #555; margin: 0 auto; width: max-content;}
+        .cell { width: var(--cell-size); height: var(--cell-size); background-color: #ccc; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: var(--font-size); cursor: pointer; border-top: 2px solid #eee; border-left: 2px solid #eee; border-bottom: 2px solid #777; border-right: 2px solid #777; user-select: none; position: relative; box-sizing: border-box;}
+        .cell.pressed { border: 1px solid #999; background-color: #e0e0e0; }
+        .cell.revealed { background-color: #e0e0e0; border: 1px solid #999; cursor: default; }
+        .cell.mine { background-color: transparent; }
+        .cell.mine-red { background-color: red !important; }
+        .cell.mine-wrong { background-color: #ffcccc; }
+
+        .num-1 { color: blue; } .num-2 { color: green; } .num-3 { color: red; } .num-4 { color: darkblue; }
+        .num-5 { color: darkred; } .num-6 { color: teal; } .num-7 { color: black; } .num-8 { color: gray; }
+
+        body.classic-theme .dashboard { background-color: #bdbdbd; }
+        body.classic-theme #smiley-btn { color: transparent !important; background-size: 100% 100%; border: none !important; }
+        body.classic-theme #smiley-btn.face-unpressed { background-image: url('img/face_unpressed.svg'); }
+        body.classic-theme #smiley-btn.face-pressed { background-image: url('img/face_pressed.svg'); }
+        body.classic-theme #smiley-btn.face-win { background-image: url('img/face_win.svg'); }
+        body.classic-theme #smiley-btn.face-lose { background-image: url('img/face_lose.svg'); }
+
+        body.classic-theme #board { gap: 0; background-color: #bdbdbd; border: 3px solid #7b7b7b;}
+        body.classic-theme .cell { border: none; background-size: 100% 100%; background-repeat: no-repeat; background-position: center; color: transparent !important; text-shadow: none !important; background-image: url('img/closed.svg'); }
+        body.classic-theme .cell.pressed { background-image: url('img/pressed.svg') !important; border:none;}
+        body.classic-theme .cell.flagged { background-image: url('img/flag.svg'); }
+        body.classic-theme .cell.revealed.num-0 { background-image: url('img/type0.svg'); }
+        body.classic-theme .cell.revealed.num-1 { background-image: url('img/type1.svg'); }
+        body.classic-theme .cell.revealed.num-2 { background-image: url('img/type2.svg'); }
+        body.classic-theme .cell.revealed.num-3 { background-image: url('img/type3.svg'); }
+        body.classic-theme .cell.revealed.num-4 { background-image: url('img/type4.svg'); }
+        body.classic-theme .cell.revealed.num-5 { background-image: url('img/type5.svg'); }
+        body.classic-theme .cell.revealed.num-6 { background-image: url('img/type6.svg'); }
+        body.classic-theme .cell.revealed.num-7 { background-image: url('img/type7.svg'); }
+        body.classic-theme .cell.revealed.num-8 { background-image: url('img/type8.svg'); }
+        body.classic-theme .cell.revealed.mine { background-image: url('img/mine.svg'); }
+        body.classic-theme .cell.revealed.mine-red { background-image: url('img/mine_red.svg') !important; }
+        body.classic-theme .cell.mine-wrong { background-image: url('img/mine_wrong.svg') !important; }
+
+        .ai-safe { box-shadow: inset 0 0 10px 4px #28a745 !important; border: 1px solid #28a745;}
+        .ai-mine { box-shadow: inset 0 0 10px 4px #dc3545 !important; border: 1px solid #dc3545;}
+        .ai-guess { box-shadow: inset 0 0 10px 4px #ffc107 !important; border: 1px solid #ffc107;}
+        body.classic-theme .ai-safe, body.classic-theme .ai-mine, body.classic-theme .ai-guess { border: none !important; }
+
+        .prob-text { position: absolute; font-size: calc(var(--cell-size) * 0.35); color: #000 !important; font-weight: 900; background: transparent; text-shadow: 1px 1px 1px #fff, -1px -1px 1px #fff, 1px -1px 1px #fff, -1px 1px 1px #fff !important; z-index: 10; pointer-events: none; letter-spacing: -0.5px;}
+
+        .highlight-move::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 3px solid #ffeb3b; box-shadow: inset 0 0 5px rgba(255, 235, 59, 0.5), 0 0 5px rgba(255, 235, 59, 0.8); pointer-events: none; z-index: 20;}
+    </style>
+</head>
+<body>
+
+    <div class="control-panel">
+        <h2>E-Sports Auto-Solver 🤖</h2>
+        
+        <div class="input-row">
+            <button class="btn-theme" onclick="toggleTheme()">🎨 Theme</button>
+            <select id="cell-size" onchange="updateCellSize()">
+                <option value="24">24px</option>
+                <option value="28" selected>28px</option>
+                <option value="32">32px</option>
+            </select>
+        </div>
+
+        <div class="section-title">Play Mode</div>
+        <div class="btn-group">
+            <button class="btn-play-bg" onclick="startNewGame(9, 9, 10)">Beginner</button>
+            <button class="btn-play-in" onclick="startNewGame(16, 16, 40)">Intermediate</button>
+            <button class="btn-play-ex" onclick="startNewGame(16, 30, 99)">Expert</button>
+        </div>
+
+        <div class="section-title">AI Engine</div>
+        <div class="btn-group">
+            <button class="btn-paste" onclick="pasteAndPlay()">📋 Paste & Play</button>
+            <button class="btn-paste" onclick="pasteAndAnalyze()" style="background:#555">📋 Paste & Analyze</button>
+            <button id="analyze-btn" class="btn-analyze" onclick="startAnalysis()">🧠 Hint / Analyze</button>
+            <button id="btn-auto" class="btn-auto" onclick="toggleAutoSolver()">🤖 Auto-Solve Play</button>
+        </div>
+        <textarea id="game-data"></textarea>
+    </div>
+
+    <div class="dashboard" id="dashboard" style="display: none;">
+        <div class="dash-box" id="mines-counter">000</div>
+        <div id="smiley-btn" class="face-unpressed" onmousedown="setSmiley('pressed')" onmouseup="resetGame()" onmouseleave="resetSmiley()">🙂</div>
+        <div class="dash-box" id="timer">000</div>
+    </div>
+
+    <div class="stats-panel" id="stats-panel" style="display: none;">
+        <div class="stat-item"><span>3BV:</span> <span id="stat-3bv">0/0</span></div>
+        <div class="stat-item"><span>Clicks:</span> <span id="stat-clicks">0</span></div>
+        <div class="stat-item"><span>Eff:</span> <span id="stat-eff">0%</span></div>
+        <div class="stat-item"><span>ZiNi:</span> <span id="stat-zini">-</span></div>
+        <div class="stat-item"><span>H-ZiNi:</span> <span id="stat-hzini">-</span></div>
+        <div class="stat-item"><span>Max Eff:</span> <span id="stat-max-eff">-</span></div>
+    </div>
+
+    <div id="board-wrapper">
+        <div id="board"></div>
+    </div>
+
+    <div class="review-panel" id="review-panel">
+        <button onclick="navigateHistoryTo(0)">|◀</button>
+        <button onclick="navigateHistory(-1)">◀ Prev</button>
+        <input type="range" id="nav-slider" min="0" value="0" step="1" oninput="navigateHistoryTo(this.value)">
+        <span id="review-counter">0/0</span>
+        <button onclick="navigateHistory(1)">Next ▶</button>
+        <button onclick="navigateHistoryTo('max')">▶|</button>
+    </div>
+
+    <script>
+        let board = [], rows = 0, cols = 0, totalMines = 0, flagsPlaced = 0;
+        let isClassicTheme = false, isFirstClick = true, gameState = 'none', finalGameStatus = 'none'; 
+        let gameHistory = [], currentHistoryIndex = 0;
+        let timerInterval, secondsElapsed = 0;
+        
+        let total3BV = 0, solved3BV = new Set(), totalClicks = 0;
+        let hzini = 0, zini = 0, maxEff = 0;
+
+        let autoSolverTimer = null;
+
+        function updateCellSize() {
+            const size = document.getElementById('cell-size').value;
+            document.documentElement.style.setProperty('--cell-size', `${size}px`);
+            document.documentElement.style.setProperty('--font-size', `${Math.max(12, size * 0.55)}px`);
+            if(cols > 0) document.getElementById('board').style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
+        }
+
+        function toggleTheme() {
+            isClassicTheme = !isClassicTheme;
+            document.body.classList.toggle('classic-theme', isClassicTheme);
+            setSmiley(gameState === 'won' ? 'win' : (gameState === 'lost' ? 'lose' : 'unpressed'));
+            board.forEach(row => row.forEach(c => { if(c.element) updateCellVisuals(c); }));
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval); secondsElapsed = 0;
+            document.getElementById('timer').innerText = "000";
+            timerInterval = setInterval(() => {
+                if(gameState === 'playing') {
+                    secondsElapsed++;
+                    document.getElementById('timer').innerText = Math.min(secondsElapsed, 999).toString().padStart(3, '0');
+                }
+            }, 1000);
+        }
+        function stopTimer() { clearInterval(timerInterval); }
+
+        function setSmiley(state) {
+            let btn = document.getElementById('smiley-btn');
+            btn.classList.remove('face-unpressed', 'face-pressed', 'face-win', 'face-lose', 'pressed-visual');
+            let emoji = '🙂'; let cls = 'face-unpressed';
+            if (state === 'pressed') { emoji = '😮'; cls = 'face-pressed'; btn.classList.add('pressed-visual'); }
+            else if (state === 'win') { emoji = '😎'; cls = 'face-win'; }
+            else if (state === 'lose') { emoji = '😵'; cls = 'face-lose'; }
+            
+            btn.classList.add(cls);
+            if(!isClassicTheme) btn.innerText = emoji;
+        }
+        function resetSmiley() {
+            if(gameState === 'playing' || gameState === 'none' || gameState === 'review') setSmiley('unpressed');
+        }
+        function resetGame() {
+            if (rows > 0 && cols > 0) startNewGame(rows, cols, totalMines);
+        }
+
+        window.addEventListener('mouseup', () => {
+            document.querySelectorAll('.cell.pressed').forEach(el => el.classList.remove('pressed'));
+        });
+
+        function getCombinations(n, k) {
+            if (k < 0 || k > n) return 0n;
+            if (k === 0 || k === n) return 1n;
+            if (k > n / 2) k = n - k;
+            let res = 1n, bigN = BigInt(n), bigK = BigInt(k);
+            for (let i = 1n; i <= bigK; i++) { res = (res * bigN) / i; bigN--; }
+            return res;
+        }
+
+        // --- STATS ENGINE ---
+        function resetStats() {
+            total3BV = 0; solved3BV.clear(); totalClicks = 0;
+            hzini = 0; zini = 0; maxEff = 0;
+            updateStatsUI();
+        }
+
+        function calculate3BVandSafeEfficiency() {
+            let compMap = new Array(rows).fill(0).map(() => new Array(cols).fill(-1));
+            let compId = 0;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (!board[r][c].isMine && board[r][c].originalValue === '0' && compMap[r][c] === -1) {
+                        let q = [{r, c}]; compMap[r][c] = compId;
+                        while (q.length > 0) {
+                            let curr = q.shift();
+                            getNeighbors(curr.r, curr.c).forEach(n => {
+                                if (!n.isMine && compMap[n.r][n.c] === -1) {
+                                    compMap[n.r][n.c] = compId;
+                                    if (n.originalValue === '0') q.push({r: n.r, c: n.c});
+                                }
+                            });
+                        }
+                        compId++;
+                    }
+                }
+            }
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (!board[r][c].isMine && board[r][c].originalValue !== '0' && compMap[r][c] === -1) {
+                        compMap[r][c] = compId++;
+                    }
+                    board[r][c].compId = compMap[r][c]; 
+                }
+            }
+            total3BV = compId;
+
+            let edgeNumbers = 0;
+            board.forEach(row => row.forEach(c => { if(!c.isMine && c.originalValue > 0) edgeNumbers++; }));
+            
+            let potentialSaves = Math.floor(edgeNumbers * 0.20); 
+            hzini = total3BV - potentialSaves;
+            if(hzini > total3BV) hzini = total3BV; 
+            if(hzini < Math.floor(total3BV * 0.5)) hzini = Math.floor(total3BV * 0.5); 
+            
+            zini = Math.max(Math.floor(total3BV * 0.4), Math.floor(hzini * 0.95)); 
+            
+            maxEff = hzini > 0 ? ((total3BV / hzini) * 100).toFixed(0) : 0;
+            updateStatsUI();
+        }
+
+        function updateStatsUI() {
+            let eff = totalClicks > 0 ? ((solved3BV.size / totalClicks) * 100).toFixed(0) : 0;
+            document.getElementById('stat-3bv').innerText = `${solved3BV.size}/${total3BV}`;
+            document.getElementById('stat-clicks').innerText = totalClicks;
+            document.getElementById('stat-eff').innerText = `${eff}%`;
+            document.getElementById('stat-hzini').innerText = isFirstClick ? "-" : hzini;
+            document.getElementById('stat-zini').innerText = isFirstClick ? "-" : zini;
+            document.getElementById('stat-max-eff').innerText = isFirstClick ? "-" : `${maxEff}%`;
+        }
+
+        // --- GAME ENGINE ---
+        function initBoardUI(isPasted = false) {
+            const boardElement = document.getElementById('board');
+            updateCellSize();
+            boardElement.innerHTML = '';
+            document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('stats-panel').style.display = 'flex';
+            document.getElementById('review-panel').style.display = 'none';
+            if(autoSolverTimer) toggleAutoSolver(); 
+            updateCounter();
+            setSmiley('unpressed');
+            
+            if (!isPasted) isFirstClick = true;
+            
+            gameState = 'playing';
+            finalGameStatus = 'none';
+            gameHistory = [];
+            currentHistoryIndex = 0;
+            resetStats();
+            startTimer();
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    let cellState = board[r][c];
+                    cell.dataset.r = r; cell.dataset.c = c;
+                    
+                    cell.addEventListener('mousedown', (e) => {
+                        if (e.button === 0 && gameState === 'playing') {
+                            if (!cellState.isRevealed && !cellState.isFlagged) {
+                                cell.classList.add('pressed');
+                            } else if (cellState.isRevealed && cellState.currentNumber > 0) {
+                                getNeighbors(r, c).forEach(n => {
+                                    if (!n.isRevealed && !n.isFlagged) n.element.classList.add('pressed');
+                                });
+                            }
+                        }
+                    });
+                    
+                    cell.addEventListener('contextmenu', (e) => { e.preventDefault(); handleUserAction('flag', r, c); });
+                    cell.addEventListener('click', () => handleUserAction('reveal', r, c));
+                    
+                    cellState.element = cell;
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+
+        function startNewGame(r, c, m) {
+            rows = r; cols = c; totalMines = m; flagsPlaced = 0; board = [];
+            for (let i = 0; i < rows; i++) {
+                let row = [];
+                for (let j = 0; j < cols; j++) row.push({ isMine: false, isRevealed: false, isFlagged: false, isFalseFlag: false, currentNumber: 0, compId: -1, r: i, c: j });
+                board.push(row);
+            }
+            initBoardUI(false);
+        }
+
+        function placeMinesAvoid(safeR, safeC) {
+            let placed = 0;
+            while(placed < totalMines) {
+                let r = Math.floor(Math.random() * rows);
+                let c = Math.floor(Math.random() * cols);
+                if(!board[r][c].isMine && (r !== safeR || c !== safeC)) {
+                    board[r][c].isMine = true; placed++;
+                }
+            }
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (!board[r][c].isMine) {
+                        let count = 0; getNeighbors(r, c).forEach(n => { if (n.isMine) count++; });
+                        board[r][c].originalValue = count.toString();
+                    } else board[r][c].originalValue = 'M';
+                }
+            }
+        }
+
+        async function pasteAndPlay() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if(parsePastedData(text)) {
+                    isFirstClick = false; 
+                    initBoardUI(true); 
+                    for(let r=0; r<rows; r++) {
+                        for(let c=0; c<cols; c++) {
+                            board[r][c].isRevealed = false; board[r][c].isFlagged = false; board[r][c].isFalseFlag = false;
+                        }
+                    }
+                    calculate3BVandSafeEfficiency(); 
+                }
+            } catch (err) { alert("Clipboard error."); }
+        }
+
+        async function pasteAndAnalyze() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if(parsePastedData(text)) {
+                    isFirstClick = false; 
+                    initBoardUI(true); 
+                    
+                    calculate3BVandSafeEfficiency();
+                    board.forEach(row => row.forEach(cell => {
+                        if(cell.tempPasteValue === 'F') { handleLogic('flag', cell.r, cell.c, false); }
+                        else if(cell.tempPasteValue !== 'C' && cell.tempPasteValue !== 'M') {
+                            cell.isRevealed = true; cell.currentNumber = parseInt(cell.tempPasteValue);
+                            if(cell.compId !== -1) solved3BV.add(cell.compId);
+                            updateCellVisuals(cell);
+                        }
+                    }));
+                    updateStatsUI();
+                    stopTimer(); 
+                    startAnalysis();
+                }
+            } catch (err) { alert("Clipboard error."); }
+        }
+
+        function parsePastedData(dataString) {
+            try {
+                let gameData = JSON.parse(dataString);
+                rows = gameData.r; cols = gameData.c; totalMines = gameData.m || 99;
+                board = []; flagsPlaced = 0;
+                for (let r = 0; r < rows; r++) {
+                    let row = [];
+                    for (let c = 0; c < cols; c++) row.push({ isMine: false, isRevealed: false, isFlagged: false, isFalseFlag: false, tempPasteValue: 'C', currentNumber: 0, compId:-1, r: r, c: c });
+                    board.push(row);
+                }
+                gameData.data.forEach(cell => {
+                    let bCell = board[cell.r][cell.c];
+                    bCell.tempPasteValue = cell.v;
+                    if (cell.v === 'M' || cell.v === 'F') bCell.isMine = true;
+                    else if(cell.v !== 'C') bCell.originalValue = cell.v;
+                });
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (!board[r][c].isMine && !board[r][c].originalValue) {
+                            let count = 0; getNeighbors(r, c).forEach(n => { if (n.isMine) count++; });
+                            board[r][c].originalValue = count.toString();
+                        } else if (board[r][c].isMine) board[r][c].originalValue = 'M';
+                    }
+                }
+                return true;
+            } catch (e) { alert("Invalid data format."); return false; }
+        }
+
+        function handleUserAction(action, r, c) {
+            if (gameState !== 'playing' && gameState !== 'review') return;
+            
+            if (gameState === 'review') {
+                gameHistory = gameHistory.slice(0, currentHistoryIndex);
+                gameState = 'playing';
+                finalGameStatus = 'none';
+                setSmiley('unpressed');
+                document.getElementById('review-panel').style.display = 'none';
+                board.forEach(row => row.forEach(c => c.element.classList.remove('highlight-move')));
+                
+                solved3BV.clear(); totalClicks = 0;
+                gameHistory.forEach(h => {
+                    totalClicks++; 
+                    if(h.action === 'reveal' && board[h.r][h.c].compId !== -1) solved3BV.add(board[h.r][h.c].compId);
+                });
+                updateStatsUI();
+            }
+
+            if (isFirstClick && action === 'reveal') { 
+                placeMinesAvoid(r, c); 
+                calculate3BVandSafeEfficiency(); 
+                isFirstClick = false; 
+            }
+
+            let changed = false;
+            let cell = board[r][c];
+            let registeredAction = action;
+
+            if (action === 'reveal' && cell.isRevealed && cell.currentNumber > 0) registeredAction = 'chord';
+
+            if (registeredAction === 'chord') changed = handleChord(r, c, true);
+            else changed = handleLogic(registeredAction, r, c, true);
+
+            // تم حل مشكلة الضغطة القاتلة بحفظها دائماً إذا كانت صالحة!
+            if (changed) {
+                totalClicks++; 
+                gameHistory.push({ action: registeredAction, r: r, c: c });
+                currentHistoryIndex = gameHistory.length;
+                updateStatsUI();
+                if (gameState === 'playing') checkWinCondition();
+            }
+        }
+
+        function handleChord(r, c, triggerGameOver) {
+            let cell = board[r][c];
+            if (!cell.isRevealed || cell.currentNumber === 0) return false;
+
+            let neighbors = getNeighbors(r, c);
+            let flagsCount = neighbors.filter(n => n.isFlagged).length;
+
+            let changedAny = false;
+            if (flagsCount === cell.currentNumber) {
+                neighbors.forEach(n => {
+                    if (!n.isRevealed && !n.isFlagged) {
+                        let res = handleLogic('reveal', n.r, n.c, triggerGameOver);
+                        if (res) changedAny = true;
+                    }
+                });
+            }
+            return changedAny; 
+        }
+
+        function handleLogic(action, r, c, triggerGameOver) {
+            let cell = board[r][c];
+            if (gameState === 'won' || gameState === 'lost') return false; 
+
+            if (action === 'flag') {
+                if (cell.isRevealed) return false;
+                clearAnalysisUI();
+                cell.isFlagged = !cell.isFlagged;
+                flagsPlaced += cell.isFlagged ? 1 : -1;
+                updateCellVisuals(cell);
+                updateCounter();
+                return true;
+            } 
+            else if (action === 'reveal') {
+                if (cell.isRevealed || cell.isFlagged) return false;
+                clearAnalysisUI();
+                cell.isRevealed = true;
+                if(cell.compId !== -1) solved3BV.add(cell.compId); 
+                
+                if (cell.isMine) {
+                    cell.causedLoss = true;
+                    updateCellVisuals(cell);
+                    if(triggerGameOver && gameState === 'playing') gameOver(false);
+                    return true;
+                }
+
+                let mineCount = parseInt(cell.originalValue) || 0;
+                cell.currentNumber = mineCount;
+                updateCellVisuals(cell);
+                
+                if (mineCount === 0) {
+                    getNeighbors(r, c).forEach(n => { if (!n.isRevealed && !n.isFlagged) handleLogic('reveal', n.r, n.c, false); });
+                }
+                return true;
+            }
+            return false;
+        }
+
+        function updateCellVisuals(cell) {
+            let el = cell.element;
+            let hadHighlight = el.classList.contains('highlight-move');
+            el.className = 'cell';
+            if (hadHighlight) el.classList.add('highlight-move');
+            el.innerText = '';
+            
+            if (cell.isFlagged) {
+                if (cell.isFalseFlag) {
+                    el.classList.add('mine-wrong');
+                    if(!isClassicTheme) el.innerText = '❌';
+                } else {
+                    el.classList.add('flagged');
+                    if(!isClassicTheme) el.innerText = '🚩';
+                }
+            } else if (cell.isRevealed) {
+                el.classList.add('revealed');
+                if (cell.isMine) {
+                    el.classList.add('mine');
+                    if (cell.causedLoss) el.classList.add('mine-red');
+                    if(!isClassicTheme) el.innerText = '💣';
+                } else {
+                    el.classList.add(`num-${cell.currentNumber}`);
+                    if (cell.currentNumber > 0 && !isClassicTheme) el.innerText = cell.currentNumber;
+                }
+            }
+        }
+
+        function checkWinCondition() {
+            if (gameState === 'lost') return;
+            let revealedCount = 0;
+            board.forEach(row => row.forEach(c => { if (c.isRevealed && !c.isMine) revealedCount++; }));
+            if (revealedCount === (rows * cols) - totalMines) gameOver(true);
+        }
+
+        function gameOver(won) {
+            if (gameState === 'won' || gameState === 'lost') return; 
+            stopTimer();
+            if(autoSolverTimer) toggleAutoSolver(); 
+            finalGameStatus = won ? 'won' : 'lost';
+            gameState = finalGameStatus;
+            setSmiley(won ? 'win' : 'lose');
+            
+            board.forEach(row => row.forEach(c => {
+                if (won) {
+                    if (c.isMine && !c.isFlagged) { c.isFlagged = true; flagsPlaced++; updateCellVisuals(c); }
+                } else {
+                    if (c.isMine && !c.isFlagged) { c.isRevealed = true; updateCellVisuals(c); } 
+                    else if (!c.isMine && c.isFlagged) { c.isFalseFlag = true; updateCellVisuals(c); }
+                }
+            }));
+            
+            updateCounter();
+            setTimeout(() => { document.getElementById('review-panel').style.display = 'flex'; updateReviewUI(); }, 800);
+        }
+
+        function navigateHistory(step) {
+            navigateHistoryTo(currentHistoryIndex + step);
+        }
+
+        function navigateHistoryTo(target) {
+            if (target === 'max') target = gameHistory.length;
+            target = parseInt(target);
+            if (target < 0 || target > gameHistory.length) return;
+            
+            currentHistoryIndex = target;
+            gameState = 'review';
+            
+            flagsPlaced = 0; totalClicks = 0; solved3BV.clear();
+            board.forEach(row => row.forEach(c => { 
+                c.isRevealed = false; c.isFlagged = false; c.causedLoss = false; c.isFalseFlag = false; 
+                c.element.classList.remove('highlight-move'); 
+            }));
+            clearAnalysisUI();
+            
+            for(let i=0; i<currentHistoryIndex; i++) {
+                let hist = gameHistory[i];
+                totalClicks++; 
+                if (hist.action === 'chord') handleChord(hist.r, hist.c, false);
+                else handleLogic(hist.action, hist.r, hist.c, false);
+            }
+            
+            if (currentHistoryIndex === gameHistory.length && finalGameStatus !== 'none') {
+                gameState = finalGameStatus;
+                setSmiley(finalGameStatus === 'won' ? 'win' : 'lose');
+                board.forEach(row => row.forEach(c => {
+                    if (finalGameStatus === 'won') {
+                        if (c.isMine && !c.isFlagged) { c.isFlagged = true; flagsPlaced++; }
+                    } else {
+                        if (c.isMine && !c.isFlagged) c.isRevealed = true;
+                        else if (!c.isMine && c.isFlagged) c.isFalseFlag = true;
+                    }
+                }));
+            } else {
+                gameState = 'review';
+                setSmiley('unpressed');
+            }
+            
+            board.forEach(row => row.forEach(c => updateCellVisuals(c)));
+            
+            if (currentHistoryIndex > 0) {
+                let lastMove = gameHistory[currentHistoryIndex - 1];
+                board[lastMove.r][lastMove.c].element.classList.add('highlight-move');
+            }
+
+            updateCounter(); updateReviewUI(); updateStatsUI();
+        }
+
+        function updateReviewUI() {
+            let max = gameHistory.length;
+            document.getElementById('review-counter').innerText = `${currentHistoryIndex}/${max}`;
+            let slider = document.getElementById('nav-slider');
+            slider.max = max; slider.value = currentHistoryIndex;
+        }
+
+        function updateCounter() {
+            let remaining = totalMines - flagsPlaced;
+            document.getElementById('mines-counter').innerText = remaining >= 0 ? remaining.toString().padStart(3, '0') : "-" + Math.abs(remaining).toString().padStart(2, '0');
+        }
+
+        function getNeighbors(r, c) {
+            let n = [];
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (i === 0 && j === 0) continue;
+                    let nr = r + i, nc = c + j;
+                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) n.push(board[nr][nc]);
+                }
+            }
+            return n;
+        }
+
+        function clearAnalysisUI() {
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if(!board[r][c].element) continue;
+                    let el = board[r][c].element;
+                    el.classList.remove('ai-safe', 'ai-mine', 'ai-guess');
+                    // الحل النهائي والجذري لمشكلة الـ removeChild Crash!
+                    let probSpans = el.querySelectorAll('.prob-text');
+                    probSpans.forEach(span => span.remove());
+                }
+            }
+        }
+
+        function analyzeBoard(showVisuals = true) {
+            clearAnalysisUI();
+            if (board.length === 0) return { safes: [], mines: [], guesses: [] };
+
+            let wrongFlagsDetected = false;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (board[r][c].isFlagged && !board[r][c].isMine) {
+                        board[r][c].element.classList.add('ai-mine');
+                        let span = document.createElement('span');
+                        span.className = 'prob-text'; span.innerText = '❌';
+                        board[r][c].element.appendChild(span);
+                        wrongFlagsDetected = true;
+                    }
+                }
+            }
+            if (wrongFlagsDetected) {
+                console.warn("AI Solver: Incorrect flags detected.");
+                return { safes: [], mines: [], guesses: [] };
+            }
+
+            let activeNumbers = [], edgeCellsSet = new Set(), edgeCellsArray = [], allHiddenCells = [];
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    let cell = board[r][c];
+                    if (!cell.isRevealed && !cell.isFlagged) allHiddenCells.push(cell);
+                    if (cell.isRevealed && cell.currentNumber > 0) {
+                        let neighbors = getNeighbors(r, c);
+                        let hiddenNeighbors = neighbors.filter(n => !n.isRevealed && !n.isFlagged);
+                        let flagsCount = neighbors.filter(n => n.isFlagged).length;
+
+                        if (hiddenNeighbors.length > 0) {
+                            activeNumbers.push({ neededMines: cell.currentNumber - flagsCount, currentMinesAssigned: 0, hiddenNeighbors: hiddenNeighbors, hiddenAssignedToSafe: 0 });
+                            hiddenNeighbors.forEach(hn => {
+                                let key = `${hn.r},${hn.c}`;
+                                if (!edgeCellsSet.has(key)) {
+                                    edgeCellsSet.add(key); hn.tempIsMine = false; hn.relevantNumbers = []; edgeCellsArray.push(hn);
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            let isolatedCells = allHiddenCells.filter(c => !edgeCellsSet.has(`${c.r},${c.c}`));
+            let isolatedCount = isolatedCells.length, globalTotalMines = totalMines - flagsPlaced;
+
+            edgeCellsArray.forEach(edge => {
+                activeNumbers.forEach(num => {
+                    if (num.hiddenNeighbors.some(n => n.r === edge.r && n.c === edge.c)) edge.relevantNumbers.push(num);
+                });
+            });
+
+            let totalValidWeight = 0n, edgeMinesWeight = new Array(edgeCellsArray.length).fill(0n), totalIsolatedMinesWeight = 0n;
+
+            function solve(index, currentEdgeMinesAssigned) {
+                if (currentEdgeMinesAssigned > globalTotalMines) return;
+                let remainingEdgesToProcess = edgeCellsArray.length - index;
+                if (currentEdgeMinesAssigned + remainingEdgesToProcess < globalTotalMines - isolatedCount) return;
+
+                if (index === edgeCellsArray.length) {
+                    if (activeNumbers.every(num => num.neededMines === num.currentMinesAssigned)) {
+                        let minesForIsolated = globalTotalMines - currentEdgeMinesAssigned;
+                        if (minesForIsolated >= 0 && minesForIsolated <= isolatedCount) {
+                            let weight = getCombinations(isolatedCount, minesForIsolated);
+                            totalValidWeight += weight;
+                            totalIsolatedMinesWeight += weight * BigInt(minesForIsolated);
+                            for (let i = 0; i < edgeCellsArray.length; i++) {
+                                if (edgeCellsArray[i].tempIsMine) edgeMinesWeight[i] += weight;
+                            }
+                        }
+                    }
+                    return;
+                }
+
+                let currentEdge = edgeCellsArray[index];
+                let canBeMine = true;
+                for (let num of currentEdge.relevantNumbers) { if (num.currentMinesAssigned + 1 > num.neededMines) { canBeMine = false; break; } }
+
+                if (canBeMine) {
+                    currentEdge.tempIsMine = true;
+                    for (let num of currentEdge.relevantNumbers) num.currentMinesAssigned++;
+                    solve(index + 1, currentEdgeMinesAssigned + 1); 
+                    for (let num of currentEdge.relevantNumbers) num.currentMinesAssigned--;
+                    currentEdge.tempIsMine = false;
+                }
+
+                let canBeSafe = true;
+                for (let num of currentEdge.relevantNumbers) {
+                    let totalRemainingToAssign = num.hiddenNeighbors.length - (num.currentMinesAssigned + num.hiddenAssignedToSafe) - 1;
+                    if (num.currentMinesAssigned + totalRemainingToAssign < num.neededMines) { canBeSafe = false; break; }
+                }
+
+                if (canBeSafe) {
+                    for (let num of currentEdge.relevantNumbers) num.hiddenAssignedToSafe++;
+                    solve(index + 1, currentEdgeMinesAssigned); 
+                    for (let num of currentEdge.relevantNumbers) num.hiddenAssignedToSafe--;
+                }
+            }
+
+            if (edgeCellsArray.length > 0) solve(0, 0);
+            else if (isolatedCount > 0 && globalTotalMines >= 0 && globalTotalMines <= isolatedCount) {
+                totalValidWeight = 1n; totalIsolatedMinesWeight = BigInt(globalTotalMines);
+            }
+
+            let result = { safes: [], mines: [], guesses: [] };
+            if (totalValidWeight === 0n) return result;
+
+            let globalProb = null;
+            if (isolatedCount > 0 && totalValidWeight > 0n) globalProb = Number((totalIsolatedMinesWeight * 10000n) / (totalValidWeight * BigInt(isolatedCount))) / 100;
+
+            let minRisk = 101;
+
+            for (let i = 0; i < edgeCellsArray.length; i++) {
+                let cell = edgeCellsArray[i], prob = Number((edgeMinesWeight[i] * 10000n) / totalValidWeight) / 100;
+                if (prob === 0) {
+                    if(showVisuals) cell.element.classList.add('ai-safe');
+                    result.safes.push(cell);
+                } else if (prob === 100) {
+                    if(showVisuals) cell.element.classList.add('ai-mine');
+                    result.mines.push(cell);
+                } else {
+                    if(showVisuals) {
+                        let span = document.createElement('span'); span.className = 'prob-text'; span.innerText = `${Math.round(prob)}%`;
+                        cell.element.appendChild(span);
+                    }
+                    result.guesses.push({cell: cell, risk: prob});
+                }
+                if (prob < minRisk) minRisk = prob;
+            }
+
+            if (globalProb !== null) {
+                isolatedCells.forEach(cell => {
+                    if(showVisuals) {
+                        let span = document.createElement('span'); span.className = 'prob-text'; span.innerText = `${Math.round(globalProb)}%`;
+                        cell.element.appendChild(span);
+                    }
+                    result.guesses.push({cell: cell, risk: globalProb});
+                    if (globalProb < minRisk) minRisk = globalProb;
+                });
+            }
+
+            if (result.safes.length === 0 && result.mines.length === 0 && result.guesses.length > 0) {
+                if(showVisuals) {
+                    result.guesses.forEach(g => { if(g.risk === minRisk) g.cell.element.classList.add('ai-guess'); });
+                }
+            }
+
+            return result;
+        }
+
+        // --- 🤖 EFFICIENCY AUTO-SOLVER ENGINE 🤖 ---
+        function toggleAutoSolver() {
+            let btn = document.getElementById('btn-auto');
+            if(autoSolverTimer) {
+                clearTimeout(autoSolverTimer);
+                autoSolverTimer = null;
+                btn.innerText = "🤖 Auto-Solve Play";
+                btn.style.animation = "none";
+            } else {
+                if(gameState !== 'playing' && isFirstClick) startNewGame(16, 30, 99);
+                if(gameState === 'playing') {
+                    btn.innerText = "🛑 Stop Auto";
+                    btn.style.animation = "pulse 2s infinite";
+                    runAutoSolverStep();
+                }
+            }
+        }
+
+        function runAutoSolverStep() {
+            if(gameState !== 'playing') { toggleAutoSolver(); return; }
+            if(isFirstClick) {
+                handleUserAction('reveal', Math.floor(rows/2), Math.floor(cols/2));
+                autoSolverTimer = setTimeout(runAutoSolverStep, 100);
+                return;
+            }
+
+            let analysis = analyzeBoard(true); 
+            
+            let bestChordEfficiency = 1.0; 
+            let bestChordMove = null;
+
+            for(let r=0; r<rows; r++) {
+                for(let c=0; c<cols; c++) {
+                    let cell = board[r][c];
+                    if(cell.isRevealed && cell.currentNumber > 0) {
+                        let neighbors = getNeighbors(r, c);
+                        let flagsCount = neighbors.filter(n => n.isFlagged).length;
+                        let hiddenNeighbors = neighbors.filter(n => !n.isRevealed && !n.isFlagged);
+                        
+                        let unflaggedKnownMines = hiddenNeighbors.filter(n => analysis.mines.includes(n));
+                        let safeToReveal = hiddenNeighbors.filter(n => analysis.safes.includes(n));
+
+                        if(flagsCount + unflaggedKnownMines.length === cell.currentNumber && safeToReveal.length > 0) {
+                            let cost = unflaggedKnownMines.length + 1; 
+                            let reward = safeToReveal.length; 
+                            let efficiency = reward / cost;
+
+                            // الجشع للكفاءة: نأخذ التكتيك الذي يحقق كفاءة أعلى من 1 (أفضل من النقر الفردي العادي)
+                            if(efficiency > bestChordEfficiency) {
+                                bestChordEfficiency = efficiency;
+                                bestChordMove = {
+                                    r: r, c: c, 
+                                    needsFlags: unflaggedKnownMines.length > 0,
+                                    flagTarget: unflaggedKnownMines.length > 0 ? unflaggedKnownMines[0] : null
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (bestChordMove) {
+                if (bestChordMove.needsFlags) {
+                    handleUserAction('flag', bestChordMove.flagTarget.r, bestChordMove.flagTarget.c);
+                } else {
+                    handleUserAction('chord', bestChordMove.r, bestChordMove.c);
+                }
+                autoSolverTimer = setTimeout(runAutoSolverStep, 50);
+                return;
+            }
+
+            // لا يوجد Chord مفيد! إذن نلجأ للفتح المباشر للمربعات المضمونة
+            // ونختار المربع الآمن الذي يلامس أكبر عدد من المربعات المجهولة لجلب أكبر قدر من الأرقام والمعلومات
+            if (analysis.safes.length > 0) {
+                let bestSafe = analysis.safes[0];
+                let maxHidden = -1;
+                analysis.safes.forEach(safeCell => {
+                    let hidden = getNeighbors(safeCell.r, safeCell.c).filter(n => !n.isRevealed && !n.isFlagged).length;
+                    if(hidden > maxHidden) { maxHidden = hidden; bestSafe = safeCell; }
+                });
+                
+                handleUserAction('reveal', bestSafe.r, bestSafe.c);
+                autoSolverTimer = setTimeout(runAutoSolverStep, 50);
+                return;
+            }
+
+            // إذا انعدمت الخيارات، يلجأ الروبوت للتخمين البشري ويختار الحواف أو الزوايا أولاً
+            if (analysis.guesses.length > 0) {
+                let minRisk = 101;
+                analysis.guesses.forEach(g => { if(g.risk < minRisk) minRisk = g.risk; });
+                let bestGuesses = analysis.guesses.filter(g => g.risk === minRisk);
+                
+                let bestGuess = bestGuesses[0];
+                let bestScore = 999;
+                
+                bestGuesses.forEach(g => {
+                    let score = 0;
+                    if((g.cell.r===0 && g.cell.c===0) || (g.cell.r===0 && g.cell.c===cols-1) || (g.cell.r===rows-1 && g.cell.c===0) || (g.cell.r===rows-1 && g.cell.c===cols-1)) score -= 10;
+                    else if(g.cell.r===0 || g.cell.r===rows-1 || g.cell.c===0 || g.cell.c===cols-1) score -= 5;
+                    
+                    if(score < bestScore) { bestScore = score; bestGuess = g; }
+                });
+
+                handleUserAction('reveal', bestGuess.cell.r, bestGuess.cell.c);
+                autoSolverTimer = setTimeout(runAutoSolverStep, 300); // إبطاء التخمين قليلاً لبناء التوتر البصري!
+                return;
+            }
+
+            toggleAutoSolver();
+        }
+
+        function startAnalysis() {
+            if(autoSolverTimer) return; 
+            let btn = document.getElementById('analyze-btn');
+            btn.innerText = "Calculating... ⏳"; btn.disabled = true;
+            setTimeout(() => { analyzeBoard(true); btn.innerText = "🧠 Hint / Analyze"; btn.disabled = false; }, 50);
+        }
+    </script>
+</body>
+</html>
