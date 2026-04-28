@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Minesweeper E-Sports Ultimate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="control-panel">
+        <h2>E-Sports Auto-Solver 🤖</h2>
+
+        <div class="input-row">
+            <button class="btn-theme" onclick="toggleTheme()">🎨 Theme</button>
+            <select id="cell-size" onchange="updateCellSize()">
+                <option value="24">24px</option>
+                <option value="28" selected>28px</option>
+                <option value="32">32px</option>
+            </select>
+        </div>
+
+        <div class="section-title">Play Mode</div>
+        <div class="btn-group">
+            <button class="btn-play-bg" onclick="startNewGame(9, 9, 10)">Beginner</button>
+            <button class="btn-play-in" onclick="startNewGame(16, 16, 40)">Intermediate</button>
+            <button class="btn-play-ex" onclick="startNewGame(16, 30, 99)">Expert</button>
+        </div>
+
+        <div class="section-title">AI Engine</div>
+        <div class="btn-group">
+            <button class="btn-paste" onclick="pasteAndPlay()">📋 Paste & Play</button>
+            <button class="btn-paste" onclick="pasteAndAnalyze()" style="background:#555">📋 Paste & Analyze</button>
+            <button id="analyze-btn" class="btn-analyze" onclick="startAnalysis()">🧠 Hint / Analyze</button>
+            <button id="btn-auto" class="btn-auto" onclick="toggleAutoSolver()">🤖 Max-Eff Auto-Play</button>
+        </div>
+        <textarea id="game-data" style="display:none;"></textarea>
+    </div>
+
+    <div class="dashboard" id="dashboard" style="display: none;">
+        <div class="dash-box" id="mines-counter">000</div>
+        <div id="smiley-btn" class="face-unpressed" onmousedown="setSmiley('pressed')" onmouseup="resetGame()"
+            onmouseleave="resetSmiley()">🙂</div>
+        <div class="dash-box" id="timer">000</div>
+    </div>
+
+    <div class="stats-panel" id="stats-panel" style="display: none;">
+        <div class="stat-item"><span>3BV:</span> <span id="stat-3bv">0/0</span></div>
+        <div class="stat-item"><span>Clicks:</span> <span id="stat-clicks">0</span></div>
+        <div class="stat-item"><span>Eff:</span> <span id="stat-eff">0%</span></div>
+        <div class="stat-item"><span>ZiNi:</span> <span id="stat-zini">-</span></div>
+        <div class="stat-item"><span>H-ZiNi:</span> <span id="stat-hzini">-</span></div>
+        <div class="stat-item"><span>Max Eff:</span> <span id="stat-max-eff">-</span></div>
+    </div>
+
+    <div id="board-wrapper">
+        <div id="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+            <div style="margin-bottom: 5px;">Deep Analysis in progress...</div>
+            <div id="loading-text" style="color: #ffeb3b; font-size: 14px;">Nodes: 0</div>
+        </div>
+
+        <div id="board"></div>
+    </div>
+
+    <div class="review-panel" id="review-panel">
+        <button onclick="navigateHistoryTo(0)">|◀</button>
+        <button onclick="navigateHistory(-1)">◀ Prev</button>
+        <input type="range" id="nav-slider" min="0" value="0" step="1" oninput="navigateHistoryTo(this.value)">
+        <span id="review-counter">0/0</span>
+        <button onclick="navigateHistory(1)">Next ▶</button>
+        <button onclick="navigateHistoryTo('max')">▶|</button>
+    </div>
+
+    <script src="script2.js"></script>
+</body>
+
+</html>
